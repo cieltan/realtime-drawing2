@@ -1,5 +1,5 @@
-module.exports = io => {
-  io.on("connection", socket => {
+module.exports = conns => {
+  conns.on("connection", socket => {
     console.log("successfully connected");
   });
 };

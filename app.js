@@ -85,7 +85,12 @@ bootApp();
 // Instantiate a socket instance based on server obj
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
-var conns = require("./sockets/index")(server);
+// var conns = require("./sockets/index")(server);
+
+io.on("connection", socket => {
+  console.log("New client connected");
+  socket.on("disconnect", () => console.log("Client disconnected"));
+});
 
 // app.use(function(req, res, next) {
 //   res.io = io;
