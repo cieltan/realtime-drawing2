@@ -10,8 +10,8 @@ class Register extends Component {
         this.state ={
             email: "",
             username: "",
-            password1: "'",
-            password2: ""
+            password: "",
+            confirmPassword: ""
         }
     }
 
@@ -23,10 +23,9 @@ class Register extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state);
-
         axios
-        .post("http://localhost:1234/api/users/register", this.state)
+        .post("/api/users/register", this.state)
+        .then((res) => console.log(res.data))
     }
 
     render() {
@@ -37,16 +36,16 @@ class Register extends Component {
                 <br></br>
                 <form onSubmit={this.handleSubmit}>
                     <div>
-                        <input id="email" onChange={this.handleChange} value={this.state.email}></input>
+                        <input placeholder="Email" id="email" onChange={this.handleChange} value={this.state.email}></input>
                     </div>
                     <div>
-                        <input id="username" onChange={this.handleChange} value={this.state.username}></input>
+                        <input placeholder="Username"  id="username" onChange={this.handleChange} value={this.state.username}></input>
                     </div>
                     <div>
-                        <input id="password1" onChange={this.handleChange} value={this.state.password1}></input>
+                        <input placeholder="Password"  id="password" onChange={this.handleChange} value={this.state.password1}></input>
                     </div>
                     <div>
-                        <input id="password2" onChange={this.handleChange} value={this.state.password2}></input>
+                        <input placeholder="Confirm Password"  id="confirmPassword" onChange={this.handleChange} value={this.state.password1}></input>
                     </div>
                     <div>
                         <button type="submit" >Register</button>

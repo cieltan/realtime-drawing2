@@ -17,10 +17,14 @@
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "helmet": "^3.21.2",
+    "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.0",
     "nodemon": "^2.0.2",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "pgtools": "^0.3.0",
-    "sequelize": "^4.44.3"
+    "sequelize": "^4.44.3",
+    "validator": "^12.1.0"
   }
 }

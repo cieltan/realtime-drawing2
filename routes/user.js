@@ -5,12 +5,24 @@ const bcrypt = require("bcrypt");
 const Sequelize = require('sequelize');
 const jwt = require("jsonwebtoken");
 
+const validateRegisterInput = require("../validation/register");
+
 //login
 router.post('/register', (req, res, next) => {
 
     //validate req.body first
 
-    let newUser = User.build(req.body)
+    const {errors, isValid} = validateRegisterInput(req.body);
+
+    if(!isValid) {
+        return res.send(errors);
+    }
+
+    let newUser = User.build({
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password
+    })
 
     User.findOne({
         where: Sequelize.or (
@@ -21,7 +33,7 @@ router.post('/register', (req, res, next) => {
     .then(user => {
 
         if(user) {
-            return res.status(400).json("User already exists");
+            return res.send("User already exists");
         }
 
         newUser.email = newUser.email.toLowerCase();
@@ -33,10 +45,14 @@ router.post('/register', (req, res, next) => {
                 newUser.password = hash;
                 newUser
                 .save()
-                .then(user => res.status(200).json(user))
+                .then(user =>{
+                    return res.status(200).json(user)
+                })
 
                 //TODO: Improve error handling
-                .catch(err => next(err));
+                .catch(err => {
+                    return res.status(400).json("Error occured")
+                });
             });
         });
     })
@@ -59,6 +75,7 @@ router.post('/register', (req, res, next) => {
     .then(user => {
 
         if(user) {
+            console.log("Haha");
             return res.status(400).json("User already exists");
         }
 
@@ -74,7 +91,7 @@ router.post('/register', (req, res, next) => {
                 .then(user => res.status(200).json(user))
 
                 //TODO: Improve error handling
-                .catch(err => next(err));
+                .catch(err => res.send("Error happened"));
             });
         });
     })
@@ -128,7 +145,7 @@ router.post('/login', (req, res, next) => {
             } else {
             return res
                 .status(400)
-                .json({ incorrectCredentials: "Incorrect credentials" });
+                .json("Incorrect Credentials");
             }
         });
 
