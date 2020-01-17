@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios";
+import {registerUser} from "../../actions/authActions";
+import { connect } from "react-redux";
 
 class Register extends Component {
 
@@ -11,7 +13,8 @@ class Register extends Component {
             email: "",
             username: "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            errors: {}
         }
     }
 
@@ -23,12 +26,11 @@ class Register extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        axios
-        .post("/api/users/register", this.state)
-        .then((res) => console.log(res.data))
+        this.props.registerUser(this.state, this.props.history);
     }
 
     render() {
+
         return (
             <div>
                 <h1>Register</h1>
@@ -50,13 +52,28 @@ class Register extends Component {
                     <div>
                         <button type="submit" >Register</button>
                     </div>
+
+                    <h1>{this.props.errors.email}</h1>
+                    <h1>{this.props.errors.username}</h1>
+                    <h1>{this.props.errors.password}</h1>
+                    <h1>{this.props.errors.confirmPassword}</h1>
+                    <h1>{this.props.errors.foundUser}</h1>
                 </form>
             </div>
         )
     }
 }
+
+const mapStateToProps = state => ({
+    auth: state.auth,
+    errors: state.errors
+});
+
+export default connect(
+    mapStateToProps,
+    { registerUser }
+  )(Register);
   
-export default Register;
 
 
   

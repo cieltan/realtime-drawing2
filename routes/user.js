@@ -16,7 +16,7 @@ router.post('/register', (req, res, next) => {
     const {errors, isValid} = validateRegisterInput(req.body);
 
     if(!isValid) {
-        return res.send(errors);
+        return res.status(400).json(errors);
     }
 
     let newUser = User.build({
@@ -34,7 +34,9 @@ router.post('/register', (req, res, next) => {
     .then(user => {
 
         if(user) {
-            return res.send("User already exists");
+            return res.status(400).json({
+                foundUser: "User already exists"
+            });
         }
 
         newUser.email = newUser.email.toLowerCase();
