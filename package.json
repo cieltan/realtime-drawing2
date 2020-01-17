@@ -9,6 +9,7 @@
     "dev": "concurrently \"npm start\" \"npm run client\""
   },
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "compression": "^1.7.3",
     "concurrently": "^5.0.2",
     "cookie-parser": "~1.4.3",
