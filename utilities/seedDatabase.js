@@ -1,6 +1,6 @@
 const { User } = require('../database/models');
 const users = require('../data/users');
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const populateUsersTable = async (users) => {
 

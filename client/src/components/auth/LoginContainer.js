@@ -10,19 +10,18 @@ class LoginContainer extends Component {
         super(props);
 
         this.state ={
-            email: "",
             username: "",
             password: "",
-            confirmPassword: "",
-            errors: {}
         }
     }
 
     componentDidMount() {
-
-        const {auth, history} = this.props
-
+        let {auth, history} = this.props
         if(auth.isAuthenticated) { history.push("/dashboard") }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        
     }
 
     handleChange = (event) => {
@@ -33,20 +32,17 @@ class LoginContainer extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        this.props.registerUser(this.state, this.props.history);
+        this.props.loginUser(this.state);
     }
 
     render() {
 
         return (
             <div>
-                <h1>Register</h1>
+                <h1>Login</h1>
                 <br></br>
                 <br></br>
                 <form onSubmit={this.handleSubmit}>
-                    <div>
-                        <input placeholder="Email" id="email" onChange={this.handleChange} value={this.state.email}></input>
-                    </div>
                     <div>
                         <input placeholder="Username"  id="username" onChange={this.handleChange} value={this.state.username}></input>
                     </div>
@@ -54,17 +50,12 @@ class LoginContainer extends Component {
                         <input placeholder="Password"  id="password" onChange={this.handleChange} value={this.state.password1}></input>
                     </div>
                     <div>
-                        <input placeholder="Confirm Password"  id="confirmPassword" onChange={this.handleChange} value={this.state.password1}></input>
-                    </div>
-                    <div>
-                        <button type="submit" >Register</button>
+                        <button type="submit" >Login</button>
                     </div>
 
-                    <h1>{this.props.errors.email}</h1>
                     <h1>{this.props.errors.username}</h1>
                     <h1>{this.props.errors.password}</h1>
-                    <h1>{this.props.errors.confirmPassword}</h1>
-                    <h1>{this.props.errors.foundUser}</h1>
+                    <h1>{this.props.errors.userNotFound}</h1>
                 </form>
             </div>
         )

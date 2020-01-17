@@ -17,6 +17,11 @@ class RegisterContainer extends Component {
         }
     }
 
+    componentDidMount() {
+        const {auth, history} = this.props
+        if(auth.isAuthenticated) { history.push("/dashboard") }
+    }
+
     handleChange = (event) => {
         this.setState({
             [event.target.id]: event.target.value
@@ -56,7 +61,7 @@ class RegisterContainer extends Component {
                     <h1>{this.props.errors.username}</h1>
                     <h1>{this.props.errors.password}</h1>
                     <h1>{this.props.errors.confirmPassword}</h1>
-                    <h1>{this.props.errors.foundUser}</h1>
+                    <h1>{this.props.errors.userFound}</h1>
                 </form>
             </div>
         )

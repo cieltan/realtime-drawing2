@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const {User} = require("../database/models");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const Sequelize = require('sequelize');
 const jwt = require("jsonwebtoken");
 const keys = require("../bin/keys");
 
 const validateRegisterInput = require("../validation/register");
+const validateLoginInput = require("../validation/login");
 
 //login
 router.post('/register', (req, res, next) => {
@@ -35,7 +36,7 @@ router.post('/register', (req, res, next) => {
 
         if(user) {
             return res.status(400).json({
-                foundUser: "User already exists"
+                userFound: "User already exists"
             });
         }
 
@@ -65,7 +66,11 @@ router.post('/register', (req, res, next) => {
 //login
 router.post('/login', (req, res, next) => {
 
-    //validate req.body first
+    const {errors, isValid} = validateLoginInput(req.body);
+
+    if(!isValid) {
+        return res.status(400).json(errors);
+    }
 
     User.findOne({
         where: {username: req.body.username}
@@ -73,7 +78,9 @@ router.post('/login', (req, res, next) => {
     .then(user => {
 
         if(!user) {
-            return res.status(400).json("User does not exist");
+            return res.status(400).json({
+                userNotFound: "User not found"
+            });
         }
 
         const password = req.body.password;
