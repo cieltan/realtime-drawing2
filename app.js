@@ -14,11 +14,6 @@ const logger = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 
-// Dependencies for socket.io
-const http = require("http");
-const socketIo = require("socket.io");
-const axios = require("axios");
-
 // Utilities;
 const createLocalDatabase = require("./utilities/createLocalDatabase");
 
@@ -78,11 +73,6 @@ const configureApp = () => {
   });
 };
 
-// Instantiate a socket instance based on server obj
-const server = http.createServer(app);
-const io = socketIo(server);
-const getApiAndEmit = "TODO";
-
 // Main function declaration;
 const bootApp = async () => {
   await syncDatabase();
@@ -92,5 +82,33 @@ const bootApp = async () => {
 // Main function invocation;
 bootApp();
 
+// Instantiate a socket instance based on server obj
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+var conns = require("./sockets/index")(server);
+
+// app.use(function(req, res, next) {
+//   res.io = io;
+//   next();
+// });
+
+// const getAndEmit = async socket => {
+//   console.log("in emitter");
+// };
+
+// let interval;
+// io.on("connection", socket => {
+//   console.log("New client connected");
+//   if (interval) {
+//     clearInterval(interval);
+//   }
+//   interval = setInterval(() => getAndEmit(socket), 10000);
+//   socket.on("disconnect", () => {
+//     console.log("Client disconnected");
+//   });
+// });
+
+// server.listen(5000, () => console.log(`Listening on port`));
+
 // Export our app, so that it can be imported in the www file;
-module.exports = app;
+module.exports = { app: app, server: server };
