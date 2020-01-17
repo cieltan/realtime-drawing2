@@ -87,8 +87,19 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server);
 // var conns = require("./sockets/index")(server);
 
+const emitter = socket => {
+  console.log(Date.now());
+  return socket.emit("FromAPI", Date.now());
+};
+
+let interval;
 io.on("connection", socket => {
   console.log("New client connected");
+  if (interval) {
+    clearInterval(interval);
+  }
+  interval = setInterval(() => emitter(socket), 10);
+
   socket.on("disconnect", () => console.log("Client disconnected"));
 });
 
