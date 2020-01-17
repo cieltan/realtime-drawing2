@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import axios from "axios";
 
-export default class Register extends Component {
+class Register extends Component {
 
     constructor(props) {
 
@@ -22,8 +23,10 @@ export default class Register extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        console.log(this.state);
 
-        console.log(this.state)
+        axios
+        .post("http://localhost:1234/api/users/register", this.state)
     }
 
     render() {
@@ -53,3 +56,8 @@ export default class Register extends Component {
         )
     }
 }
+  
+export default Register;
+
+
+  
