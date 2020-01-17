@@ -19,8 +19,6 @@ const http = require("http");
 const socketIo = require("socket.io");
 const axios = require("axios");
 
-const port = 4001;
-
 // Utilities;
 const createLocalDatabase = require("./utilities/createLocalDatabase");
 
