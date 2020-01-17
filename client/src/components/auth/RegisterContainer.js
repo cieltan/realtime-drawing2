@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import axios from "axios";
 import {registerUser} from "../../actions/authActions";
 import { connect } from "react-redux";
+import PropTypes from "prop-types"
 
-class Register extends Component {
+class RegisterContainer extends Component {
 
     constructor(props) {
 
@@ -14,7 +14,6 @@ class Register extends Component {
             username: "",
             password: "",
             confirmPassword: "",
-            errors: {}
         }
     }
 
@@ -64,6 +63,12 @@ class Register extends Component {
     }
 }
 
+RegisterContainer.propTypes = {
+    registerUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
+  };
+
 const mapStateToProps = state => ({
     auth: state.auth,
     errors: state.errors
@@ -72,7 +77,7 @@ const mapStateToProps = state => ({
 export default connect(
     mapStateToProps,
     { registerUser }
-  )(Register);
+  )(RegisterContainer);
   
 
 
