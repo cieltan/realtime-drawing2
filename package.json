@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "seed": "node ./utilities/seedDatabase"
+    "seed": "node ./utilities/seedDatabase",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm start\" \"npm run client\""
   },
   "dependencies": {
     "compression": "^1.7.3",
+    "concurrently": "^5.0.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
