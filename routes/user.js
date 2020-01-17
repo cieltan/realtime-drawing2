@@ -3,8 +3,9 @@ const router = express.Router();
 const {User} = require("../database/models");
 const bcrypt = require("bcrypt");
 const Sequelize = require('sequelize');
+const jwt = require("jsonwebtoken");
 
-// Find all of the games of the season, with the homeTeam and awayTeam eager loaded;
+//login
 router.post('/register', (req, res, next) => {
 
     //validate req.body first
@@ -38,6 +39,99 @@ router.post('/register', (req, res, next) => {
                 .catch(err => next(err));
             });
         });
+    })
+
+});
+
+//login
+router.post('/register', (req, res, next) => {
+
+    //validate req.body first
+
+    let newUser = User.build(req.body)
+
+    User.findOne({
+        where: Sequelize.or (
+            {email: req.body.email},
+            {username: req.body.username}
+        )
+    })
+    .then(user => {
+
+        if(user) {
+            return res.status(400).json("User already exists");
+        }
+
+        newUser.email = newUser.email.toLowerCase();
+
+        // Hash password before saving in database
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+                if (err) throw err;
+                newUser.password = hash;
+                newUser
+                .save()
+                .then(user => res.status(200).json(user))
+
+                //TODO: Improve error handling
+                .catch(err => next(err));
+            });
+        });
+    })
+
+});
+
+//login
+router.post('/login', (req, res, next) => {
+
+    //validate req.body first
+
+    const secretOrKey=  "skdw;oeipdksjnlkiwdfjslmo[dpil";
+
+    User.findOne({
+        where: {username: req.body.username}
+    })
+    .then(user => {
+
+        if(!user) {
+            return res.status(400).json("User does not exist");
+        }
+
+        const password = req.body.password;
+
+        // Check password
+        bcrypt.compare(password, user.password)
+        .then(isMatch => {
+
+            if (isMatch) {
+            // User matched
+            // Create JWT Payload
+                const payload = {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email
+                };
+    
+                // Sign token
+                jwt.sign(
+                    payload,
+                    secretOrKey,
+                    { expiresIn: 31556926 }, // 1 year in seconds 
+                    (err, token) => {
+                        return res.status(200).json({
+                            success: true,
+                            token: "Bearer " + token
+                        });
+                    }
+                );
+
+            } else {
+            return res
+                .status(400)
+                .json({ incorrectCredentials: "Incorrect credentials" });
+            }
+        });
+
     })
 
 });
