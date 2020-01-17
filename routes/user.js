@@ -11,7 +11,6 @@ router.post('/register', (req, res, next) => {
     let newUser = User.build(req.body)
 
     //search db to see if the user already exists
-
     
     newUser.email = newUser.email.toLowerCase();
 
@@ -23,7 +22,7 @@ router.post('/register', (req, res, next) => {
             newUser
             .save()
             .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .catch(err => next(err));
         });
     });
 

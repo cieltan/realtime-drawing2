@@ -1,12 +1,15 @@
 const { User } = require('../database/models');
-
-const users = require('../data/users'); // 51 players;
+const users = require('../data/users');
+const bcrypt = require("bcrypt");
 
 const populateUsersTable = async (users) => {
 
-    let user1 = await User.create(users[0]);
-    let user2 = await User.create(users[1]);
-    let user3 = await User.create(users[2]);
+    for (let i = 0; i < users.length; i++) {
+        let newUser =  await User.build(users[i]);
+        newUser.email = newUser.email.toLowerCase();
+        await newUser.save();
+    }
+
 }
 
 const seedDatabase = async () => {
