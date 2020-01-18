@@ -36,5 +36,6 @@ const onError = error => {
 
 // Listen on provided port, on all network interfaces with event listeners and event handlers;
 server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening(server));
+console.log(`server now listening on port: ${port}`)
+server.on('error', onError);
+server.on('listening', onListening(server));
