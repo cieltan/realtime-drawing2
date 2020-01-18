@@ -9,8 +9,7 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "i": "^0.3.6",
-    "npm": "^6.13.6",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
     "axios": "^0.19.1",
     "jwt-decode": "^2.2.0",
     "react": "^16.12.0",
