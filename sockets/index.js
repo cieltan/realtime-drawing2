@@ -31,15 +31,18 @@ module.exports = io => {
     interval = setInterval(() => emitter(socket), 60000);
 
     // get new client's token and associate it with socket id
-    socket.on("token", function(data) {
+    socket.on("token", data => {
       let obj = {};
       obj[data] = socket.id;
       users.push(obj);
     });
 
-    socket.on("sendy", function(data) {
-      console.log(data);
+    // event in which the player has drawn
+    socket.on("sendy", data => {
+      // broadcast new drawing points to everyone
       io.emit("sent", data);
+      // add to the moves array so new clients receive all the work until that point
+      moves.push(data);
     });
 
     // execute whenever a connected socket disconnects

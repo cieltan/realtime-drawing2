@@ -60,9 +60,10 @@ class Socks extends Component {
         start: { ...this.prevPos },
         stop: { ...offSetData }
       };
-      // Add the position to the line array
+
+      // give socket new drawn data
       this.socket.emit("sendy", positionData);
-      console.log(positionData);
+      // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);
     }
