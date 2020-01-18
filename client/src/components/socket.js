@@ -27,9 +27,20 @@ class Socks extends Component {
     ctx.lineCap = "round";
     ctx.lineWidth = 5;
 
+    this.socket.on("sent2", data => {
+      console.log(data);
+      // this.paint(data.start, data.stop, this.userStrokeStyle);
+      data.moves.map(point =>
+        this.paint(point.start, point.stop, this.userStrokeStyle)
+      );
+    });
+
     this.socket.on("sent", data => {
       console.log(data);
-      this.paint(data.start, data.stop, this.userStrokeStyle);
+      // this.paint(data.start, data.stop, this.userStrokeStyle);
+      data.moves.map(point =>
+        this.paint(point.start, point.stop, this.userStrokeStyle)
+      );
     });
   }
 

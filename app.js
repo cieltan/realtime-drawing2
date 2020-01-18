@@ -107,10 +107,12 @@ const emitter = socket => {
 };
 
 let interval;
+let moves = [];
 
 io.on("connection", socket => {
   players++;
   console.log("New client connected");
+  io.emit("sent2", { moves: moves });
   // if (interval) {
   //   clearInterval(interval);
   // }
@@ -118,7 +120,8 @@ io.on("connection", socket => {
 
   socket.on("sendy", function(data) {
     console.log(data);
-    io.emit("sent", data);
+    moves.push(data);
+    io.emit("sent", { moves: moves });
   });
 
   socket.on("disconnect", () => {
