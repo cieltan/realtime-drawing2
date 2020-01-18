@@ -8,12 +8,12 @@
 
 // Module dependencies;
 
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const helmet = require('helmet');
-const compression = require('compression');
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const helmet = require("helmet");
+const compression = require("compression");
 const cors = require("cors");
 const passport = require("passport");
 require("dotenv").config();
@@ -48,43 +48,43 @@ const app = express();
 
 // A helper function to create our app with configurations and middleware;
 const configureApp = () => {
-    app.use(helmet());
-    app.use(logger('dev'));
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: false }));
-    app.use(compression());
-    app.use(cookieParser());
+  app.use(helmet());
+  app.use(logger("dev"));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(compression());
+  app.use(cookieParser());
 
-    // Passport middleware
-    app.use(passport.initialize());
-    require("./bin/passport")(passport);
+  // Passport middleware
+  app.use(passport.initialize());
+  require("./bin/passport")(passport);
 
-    app.use(cors({
-        origin: "*"
-    }))
+  app.use(
+    cors({
+      origin: "*"
+    })
+  );
 
+  // Mount our apiRouter;
+  app.use("/api", apiRouter);
 
-    // Mount our apiRouter;
-    app.use('/api', apiRouter);
+  // Error handling;
+  app.use((req, res, next) => {
+    if (path.extname(req.path).length) {
+      const err = new Error("Not found");
+      err.status = 404;
+      next(err);
+    } else {
+      next();
+    }
+  });
 
-    // Error handling;
-    app.use((req, res, next) => {
-        if (path.extname(req.path).length) {
-        const err = new Error('Not found');
-        err.status = 404;
-        next(err);
-        }
-        else {
-        next();
-        }
-    });
-
-    // More error handling;
-    app.use((err, req, res, next) => {
-        console.error(err);
-        console.error(err.stack);
-        res.status(err.status || 500).send(err.message || 'Internal server error.');
-    });
+  // More error handling;
+  app.use((err, req, res, next) => {
+    console.error(err);
+    console.error(err.stack);
+    res.status(err.status || 500).send(err.message || "Internal server error.");
+  });
 };
 
 // Main function declaration;
@@ -101,20 +101,30 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server);
 // var conns = require("./sockets/index")(server);
 
+let players = 0;
 const emitter = socket => {
-  console.log(Date.now());
-  return socket.emit("FromAPI", Date.now());
+  return io.emit("FromAPI", players);
 };
 
 let interval;
-io.on("connection", socket => {
-  console.log("New client connected");
-  if (interval) {
-    clearInterval(interval);
-  }
-  interval = setInterval(() => emitter(socket), 10);
 
-  socket.on("disconnect", () => console.log("Client disconnected"));
+io.on("connection", socket => {
+  players++;
+  console.log("New client connected");
+  // if (interval) {
+  //   clearInterval(interval);
+  // }
+  // interval = setInterval(() => emitter(socket), 10);
+
+  socket.on("sendy", function(data) {
+    console.log(data);
+    io.emit("sent", data);
+  });
+
+  socket.on("disconnect", () => {
+    players--;
+    console.log("Client disconnected");
+  });
 });
 
 // app.use(function(req, res, next) {
