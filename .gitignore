@@ -1,7 +1,5 @@
 /node_modules
-package-lock.json
 .DS_Store
 /client/node_modules
-/client/package-lock.json
 /client/build
 /client/.DS_Store
