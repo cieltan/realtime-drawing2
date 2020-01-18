@@ -7,6 +7,7 @@
 // }
 
 // Module dependencies;
+
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -18,18 +19,27 @@ const passport = require("passport");
 require("dotenv").config();
 
 // Utilities;
-const createLocalDatabase = require('./utilities/createLocalDatabase');
+const createLocalDatabase = require("./utilities/createLocalDatabase");
 
 // Our database instance;
-const db = require('./database');
+const db = require("./database");
 
 // Our apiRouter;
-const apiRouter = require('./routes/index');
+const apiRouter = require("./routes/index");
 
 // A helper function to sync our database;
 const syncDatabase = () => {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     db.sync();
+  } else {
+    console.log("As a reminder, the forced synchronization option is on");
+    db.sync({ force: true }).catch(err => {
+      if (err.name === "SequelizeConnectionError") {
+        createLocalDatabase();
+      } else {
+        console.log(err);
+      }
+    });
   }
   else {
     console.log('As a reminder, the forced synchronization option is on');
@@ -98,5 +108,49 @@ const bootApp = async () => {
 // Main function invocation;
 bootApp();
 
+// Instantiate a socket instance based on server obj
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+// var conns = require("./sockets/index")(server);
+
+const emitter = socket => {
+  console.log(Date.now());
+  return socket.emit("FromAPI", Date.now());
+};
+
+let interval;
+io.on("connection", socket => {
+  console.log("New client connected");
+  if (interval) {
+    clearInterval(interval);
+  }
+  interval = setInterval(() => emitter(socket), 10);
+
+  socket.on("disconnect", () => console.log("Client disconnected"));
+});
+
+// app.use(function(req, res, next) {
+//   res.io = io;
+//   next();
+// });
+
+// const getAndEmit = async socket => {
+//   console.log("in emitter");
+// };
+
+// let interval;
+// io.on("connection", socket => {
+//   console.log("New client connected");
+//   if (interval) {
+//     clearInterval(interval);
+//   }
+//   interval = setInterval(() => getAndEmit(socket), 10000);
+//   socket.on("disconnect", () => {
+//     console.log("Client disconnected");
+//   });
+// });
+
+// server.listen(5000, () => console.log(`Listening on port`));
+
 // Export our app, so that it can be imported in the www file;
-module.exports = app;
+module.exports = { app: app, server: server };
