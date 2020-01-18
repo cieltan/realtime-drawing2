@@ -4,12 +4,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 class DashboardContainer extends Component {
-
-    componentDidMount() {
-
-        console.log(localStorage.getItem("jwtToken"));
-    }
-
     render() {
         return (
             <div>

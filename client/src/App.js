@@ -43,8 +43,6 @@ class App extends Component {
 
     render() {
         return (
-            
-
             <Provider store={store}>
                 <Router>
                         <div className="App">

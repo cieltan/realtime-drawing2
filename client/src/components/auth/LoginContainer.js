@@ -60,6 +60,7 @@ class LoginContainer extends Component {
                     <h1>{this.props.errors.username}</h1>
                     <h1>{this.props.errors.password}</h1>
                     <h1>{this.props.errors.userNotFound}</h1>
+                    <h1>{this.props.errors.credentials}</h1>
                 </form>
             </div>
         )
