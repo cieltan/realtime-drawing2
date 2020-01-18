@@ -13,6 +13,8 @@ import RegisterContainer from "./components/auth/RegisterContainer";
 import LoginContainer from "./components/auth/LoginContainer";
 import DashboardContainer from "./components/dashboard/DashboardContainer";
 import PrivateRoute from './components/auth/PrivateRoute';
+import GameView from "./components/drawing/GameView";
+import NavBar from './components/layout/NavBar';
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -45,11 +47,13 @@ class App extends Component {
             <Provider store={store}>
                 <Router>
                         <div className="App">
+
+                            <NavBar></NavBar>
+                            
                             <Switch>
                                 <Route exact path="/" component={LoginContainer} />
                                 <Route exact path="/register" component={RegisterContainer} />
                                 
-                                <PrivateRoute exact path="/dashboard" component={DashboardContainer} />
                                 <PrivateRoute exact path="/dashboard" component={DashboardContainer} />
                                 <PrivateRoute exact path="/game" component={GameView} />
                             </Switch>

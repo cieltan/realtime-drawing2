@@ -11,6 +11,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import SchoolIcon from '@material-ui/icons/School';
 import Paper from '../layout/Paper';
 import WordPopUp from './WordPopUp';
+import CanvasContainer from './CanvasContainer.js';
 
 class GameView extends Component {
 
@@ -50,7 +51,7 @@ class GameView extends Component {
                     <ListItemText primary="Score" secondary="0" />
                 </ListItem>
                 </div>
-                <div className="paper"><Paper></Paper></div>
+                <div className="paper"><CanvasContainer></CanvasContainer></div>
            </div>
            </div>
         )
