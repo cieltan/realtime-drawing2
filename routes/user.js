@@ -4,7 +4,6 @@ const {User} = require("../database/models");
 const bcrypt = require("bcryptjs");
 const Sequelize = require('sequelize');
 const jwt = require("jsonwebtoken");
-const keys = require("../bin/keys");
 
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
@@ -101,7 +100,7 @@ router.post('/login', (req, res, next) => {
                 // Sign token
                 jwt.sign(
                     payload,
-                    keys.secretOrKey,
+                    process.env.ACCESS_TOKEN_SECRET,
                     { expiresIn: 31556926 }, // 1 year in seconds 
                     (err, token) => {
                         return res.status(200).json({

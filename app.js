@@ -15,6 +15,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const cors = require("cors");
 const passport = require("passport");
+require("dotenv").config();
 
 // Utilities;
 const createLocalDatabase = require('./utilities/createLocalDatabase');
