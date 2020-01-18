@@ -28,19 +28,14 @@ class Socks extends Component {
     ctx.lineWidth = 5;
 
     this.socket.on("initialize", data => {
-      console.log(data);
-      // this.paint(data.start, data.stop, this.userStrokeStyle);
       data.moves.map(point =>
         this.paint(point.start, point.stop, this.userStrokeStyle)
       );
     });
 
-    this.socket.on("sent", data => {
+    this.socket.on("newDrawingData", data => {
       console.log(data);
       this.paint(data.start, data.stop, this.userStrokeStyle);
-      // data.moves.map(point =>
-      //   this.paint(point.start, point.stop, this.userStrokeStyle)
-      // );
     });
   }
 
@@ -62,7 +57,7 @@ class Socks extends Component {
       };
 
       // give socket new drawn data
-      this.socket.emit("sendy", positionData);
+      this.socket.emit("newPositionData", positionData);
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.userStrokeStyle);

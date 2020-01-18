@@ -38,9 +38,9 @@ module.exports = io => {
     });
 
     // event in which the player has drawn
-    socket.on("sendy", data => {
+    socket.on("newPositionData", data => {
       // broadcast new drawing points to everyone
-      io.emit("sent", data);
+      io.emit("newDrawingData", data);
       // add to the moves array so new clients receive all the work until that point
       moves.push(data);
     });
