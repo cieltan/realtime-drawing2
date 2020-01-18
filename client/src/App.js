@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react';	
 import './App.css';
-
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { Provider } from "react-redux";
@@ -51,6 +50,8 @@ class App extends Component {
                                 <Route exact path="/register" component={RegisterContainer} />
                                 
                                 <PrivateRoute exact path="/dashboard" component={DashboardContainer} />
+                                <PrivateRoute exact path="/dashboard" component={DashboardContainer} />
+                                <PrivateRoute exact path="/game" component={GameView} />
                             </Switch>
                         </div>
                     </Router>
