@@ -36,3 +36,58 @@
     transform: rotate(360deg);
   }
 }
+
+.profile-box {
+  background-color: pink;
+  margin-left: 2%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  color: white;
+  height: 85vh;
+  width: 20vw;
+  font-size: 25px;
+}
+
+.image {
+  display: grid;
+  place-items: center;
+}
+
+.turn-title {
+  font: 30px copperplate;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.paper {
+  display: grid;
+  place-items: center;
+  margin-left: 3%;
+}
+
+.alignment {
+  display: flex;
+  flex-direction: row;
+}
+
+.word {
+  display: grid;
+  place-items: center;
+  font: 30px copperplate;
+  color: white;
+  background-color: palevioletred;
+  margin-top: 1%;
+  box-align: center;
+  display: inline-flex;
+  place-items: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game{
+  background-color: gainsboro;
+}
