@@ -96,62 +96,13 @@ const bootApp = async () => {
 // Main function invocation;
 bootApp();
 
-// Instantiate a socket instance based on server obj
+// Create HTTP server
 var server = require("http").Server(app);
+// Instantiate a socket instance based on server obj
 var io = require("socket.io")(server);
-// var conns = require("./sockets/index")(server);
 
-let players = 0;
-const emitter = socket => {
-  return io.emit("FromAPI", players);
-};
-
-let interval;
-let moves = [];
-
-io.on("connection", socket => {
-  players++;
-  console.log("New client connected");
-  io.emit("sent2", { moves: moves });
-  // if (interval) {
-  //   clearInterval(interval);
-  // }
-  // interval = setInterval(() => emitter(socket), 10);
-
-  socket.on("sendy", function(data) {
-    console.log(data);
-    moves.push(data);
-    io.emit("sent", { moves: moves });
-  });
-
-  socket.on("disconnect", () => {
-    players--;
-    console.log("Client disconnected");
-  });
-});
-
-// app.use(function(req, res, next) {
-//   res.io = io;
-//   next();
-// });
-
-// const getAndEmit = async socket => {
-//   console.log("in emitter");
-// };
-
-// let interval;
-// io.on("connection", socket => {
-//   console.log("New client connected");
-//   if (interval) {
-//     clearInterval(interval);
-//   }
-//   interval = setInterval(() => getAndEmit(socket), 10000);
-//   socket.on("disconnect", () => {
-//     console.log("Client disconnected");
-//   });
-// });
-
-// server.listen(5000, () => console.log(`Listening on port`));
+// run all socket logic
+var socketLogic = require("./sockets/index")(io);
 
 // Export our app, so that it can be imported in the www file;
 module.exports = { app: app, server: server };
