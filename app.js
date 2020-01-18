@@ -33,7 +33,7 @@ const syncDatabase = () => {
     db.sync();
   } else {
     console.log("As a reminder, the forced synchronization option is on");
-    db.sync({ force: true }).catch(err => {
+    db.sync().catch(err => {
       if (err.name === "SequelizeConnectionError") {
         createLocalDatabase();
       } else {
@@ -41,18 +41,6 @@ const syncDatabase = () => {
       }
     });
   }
-  else {
-    console.log('As a reminder, the forced synchronization option is on');
-    db.sync()
-      .catch(err => {
-        if (err.name === 'SequelizeConnectionError') {
-          createLocalDatabase();
-        }
-        else {
-          console.log(err);
-        }
-      });
-    }
 };
 
 // Instantiate our express application;
