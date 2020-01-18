@@ -2,7 +2,7 @@
 let interval;
 
 // keep an array of
-// {token id: socket id}
+// {token : socket id}
 let users = [];
 // keep a list of moves made
 let moves = [];
@@ -14,9 +14,13 @@ const emitter = socket => {
 };
 
 module.exports = io => {
+  // execute whenever a new socket connects
   io.on("connection", socket => {
+    // sanity check log
     console.log("New client connected");
-    io.emit("sent2", { moves: moves });
+
+    // event for new clients to receive drawings already in progress
+    io.emit("initialize", { moves: moves });
 
     // reset timer
     if (interval) {
@@ -26,6 +30,7 @@ module.exports = io => {
     // print message every 60 seconds
     interval = setInterval(() => emitter(socket), 60000);
 
+    // get new client's token and associate it with socket id
     socket.on("token", function(data) {
       let obj = {};
       obj[data] = socket.id;
@@ -33,18 +38,14 @@ module.exports = io => {
     });
 
     socket.on("sendy", function(data) {
-      // console.log(data);
-      moves.push(data);
-      io.emit("sent", { moves: moves });
+      console.log(data);
+      io.emit("sent", data);
     });
 
+    // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
-      //users = users.filter(user => user.values[0])
-      // console.log(users);
-      // console.log(socket.id);
-      // users = users.filter(user => Object.values(user)[0] === socket.id);
+      // sanity check log
       console.log("Client disconnected");
-      // console.log(users);
     });
   });
 };
