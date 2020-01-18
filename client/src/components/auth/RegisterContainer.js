@@ -19,7 +19,18 @@ class RegisterContainer extends Component {
 
     componentDidMount() {
         const {auth, history} = this.props
-        if(auth.isAuthenticated) { history.push("/dashboard") }
+        
+        if(auth.isAuthenticated) { 
+            history.push("/dashboard") 
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const {auth, history} = this.props
+
+        if(auth.isAuthenticated) {
+            history.push("/dashboard")
+        }
     }
 
     handleChange = (event) => {

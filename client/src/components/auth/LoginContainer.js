@@ -21,7 +21,11 @@ class LoginContainer extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        
+        const {auth, history} = this.props
+
+        if(auth.isAuthenticated) {
+            history.push("/dashboard")
+        }
     }
 
     handleChange = (event) => {
