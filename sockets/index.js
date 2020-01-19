@@ -1,16 +1,35 @@
 // declare interval for server based turn logic
 let interval;
 
-// keep an array of
-// {token : socket id}
+// {socket id : token}
+let userMap = {};
+// keep an array of users, first index being whose turn it is
 let users = [];
-// keep a list of moves made
+
+// keep a list of moves made by the user whose turn it is
 let moves = [];
 
+let turn = 0;
+
+// rotate an array like a deque
+// https://stackoverflow.com/a/33451102
+const arrayRotate = (arr, count) => {
+  count -= arr.length * Math.floor(count / arr.length);
+  arr.push.apply(arr, arr.splice(0, count));
+  return arr;
+};
+
 // logic for when the time interval has completed
-const emitter = socket => {
+// rotates users array (mutation side effect)
+// emits new drawing
+// emits to to next user it's their turn\
+const emitter = (io, users, userMap) => {
   console.log(`it is time: ${Date.now()}`);
-  return "hi"; //io.emit("FromAPI", players);
+  turn++;
+  // arrayRotate(users, 1);
+  console.log(users);
+  console.log(userMap);
+  io.emit("changedTurn", turn);
 };
 
 module.exports = io => {
@@ -28,13 +47,15 @@ module.exports = io => {
     }
 
     // print message every 60 seconds
-    interval = setInterval(() => emitter(socket), 60000);
+    // TODO 60000
+    interval = setInterval(() => emitter(io, users, userMap), 1000);
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
-      let obj = {};
-      obj[data] = socket.id;
-      users.push(obj);
+      userMap[socket.id] = data;
+      console.log(socket.id);
+      users.push(socket.id);
+      console.log(users);
     });
 
     // event in which the player has drawn

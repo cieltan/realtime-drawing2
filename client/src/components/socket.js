@@ -5,7 +5,8 @@ class Socks extends Component {
   constructor() {
     super();
     this.state = {
-      response: false
+      response: false,
+      turn: -1
     };
   }
 
@@ -19,6 +20,8 @@ class Socks extends Component {
   socket = socketIOClient("http://127.0.0.1:1234");
 
   componentDidMount() {
+    //
+
     // Here we set up the properties of the canvas element.
 
     let ctx = this.refs.canvas.getContext("2d");
@@ -26,6 +29,8 @@ class Socks extends Component {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.lineWidth = 5;
+
+    this.socket.emit("token", localStorage.getItem("jwtToken"));
 
     this.socket.on("initialize", data => {
       data.moves.map(point =>
@@ -36,6 +41,10 @@ class Socks extends Component {
     this.socket.on("newDrawingData", data => {
       console.log(data);
       this.paint(data.start, data.stop, this.userStrokeStyle);
+    });
+
+    this.socket.on("changedTurn", data => {
+      this.setState({ turn: data });
     });
   }
 
@@ -88,10 +97,10 @@ class Socks extends Component {
   };
 
   render() {
-    console.log(this.state.response);
+    console.log(this.state.turn);
     return (
       <div>
-        {/* {this.state.response.start} */}
+        {this.state.turn}
         <canvas
           style={{ background: "gray" }}
           onMouseDown={this.onMouseDown}
