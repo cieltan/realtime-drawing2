@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
+import Timer from "./Timer";
 
 class CanvasContainer extends Component {
   constructor(props) {
@@ -9,7 +10,8 @@ class CanvasContainer extends Component {
         userStrokeStyle: "#FFFFFF",
         lineWidth: 5,
         response: false,
-        turn: false
+        turn: false,
+        seconds: 0
       };
     }
   }
@@ -55,6 +57,14 @@ class CanvasContainer extends Component {
       this.setState({ turn: false });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+    });
+
+    this.socket.on("startDrawing", data => {
+      console.log(typeof data);
+
+      this.setState({
+        seconds: data / 1000
+      });
     });
   }
 
@@ -130,9 +140,17 @@ class CanvasContainer extends Component {
     }
   };
 
+  startDrawing = () => {
+    if (this.state.turn && this.state.seconds <= 0) {
+      this.socket.emit("startDrawing");
+    }
+  };
+
   render() {
     return (
       <div>
+        {this.state.seconds}
+        <Timer seconds={this.state.seconds} />
         <div className="buttonalignment">
           <div className="search">
             <select
@@ -178,6 +196,7 @@ class CanvasContainer extends Component {
             </select>
           </div>
         </div>
+        <button onClick={this.startDrawing}>Start Drawing</button>
         <canvas
           style={{ background: "gray" }}
           onMouseDown={this.onMouseDown}
