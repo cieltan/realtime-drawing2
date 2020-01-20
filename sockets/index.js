@@ -23,13 +23,12 @@ const arrayRotate = (arr, count) => {
 // rotates users array (mutation side effect)
 // emits new drawing
 // emits to to next user it's their turn\
-const emitter = (io, users, userMap) => {
+const emitter = (io, socket, users, userMap) => {
   console.log(`it is time: ${Date.now()}`);
   turn++;
-  // arrayRotate(users, 1);
-  console.log(users);
-  console.log(userMap);
-  io.emit("changedTurn", turn);
+  io.to(users[0]).emit("changedTurn", -1);
+  arrayRotate(users, 1);
+  io.to(users[0]).emit("turn", 1);
 };
 
 module.exports = io => {
@@ -41,6 +40,8 @@ module.exports = io => {
     // event for new clients to receive drawings already in progress
     io.emit("initialize", { moves: moves });
 
+    io.to(users[0]).emit("turn", 1);
+
     // reset timer
     if (interval) {
       clearInterval(interval);
@@ -48,7 +49,7 @@ module.exports = io => {
 
     // print message every 60 seconds
     // TODO 60000
-    interval = setInterval(() => emitter(io, users, userMap), 1000);
+    interval = setInterval(() => emitter(io, socket, users, userMap), 5000);
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {

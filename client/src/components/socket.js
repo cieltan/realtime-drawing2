@@ -6,7 +6,7 @@ class Socks extends Component {
     super();
     this.state = {
       response: false,
-      turn: -1
+      turn: false
     };
   }
 
@@ -38,25 +38,34 @@ class Socks extends Component {
       );
     });
 
-    this.socket.on("newDrawingData", data => {
-      console.log(data);
-      this.paint(data.start, data.stop, this.userStrokeStyle);
+    this.socket.on("turn", data => {
+      console.log("turn");
+      this.setState({ turn: true });
     });
 
+    if (!this.state.turn) {
+      this.socket.on("newDrawingData", data => {
+        console.log(data);
+        this.paint(data.start, data.stop, this.userStrokeStyle);
+      });
+    }
     this.socket.on("changedTurn", data => {
-      this.setState({ turn: data });
+      console.log("changed turn");
+      this.setState({ turn: false });
     });
   }
 
   onMouseDown = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
-    this.isPainting = true;
-    this.prevPos = { offsetX, offsetY };
-    this.paint(this.prevPos, this.prevPos, this.userStrokeStyle);
+    if (this.state.turn) {
+      const { offsetX, offsetY } = nativeEvent;
+      this.isPainting = true;
+      this.prevPos = { offsetX, offsetY };
+      this.paint(this.prevPos, this.prevPos, this.userStrokeStyle);
+    }
   };
 
   onMouseMove = ({ nativeEvent }) => {
-    if (this.isPainting) {
+    if (this.isPainting && this.state.turn) {
       const { offsetX, offsetY } = nativeEvent;
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
@@ -100,7 +109,6 @@ class Socks extends Component {
     console.log(this.state.turn);
     return (
       <div>
-        {this.state.turn}
         <canvas
           style={{ background: "gray" }}
           onMouseDown={this.onMouseDown}
