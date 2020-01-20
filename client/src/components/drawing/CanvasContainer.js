@@ -40,14 +40,6 @@ class CanvasContainer extends Component {
       data.moves.map(point =>
         this.paint(point.start, point.stop, point.userStrokeStyle)
       );
-
-      if (data.startOfTurn !== undefined) {
-        this.setState({
-          seconds: 30 - (Math.floor(Date.now() / 1000) - data.startOfTurn)
-        });
-      }
-
-      console.log(data.startOfTurn);
     });
 
     this.socket.on("turn", data => {
@@ -68,11 +60,9 @@ class CanvasContainer extends Component {
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
     });
 
-    this.socket.on("startDrawing", data => {
-      console.log(Math.floor(Date.now() / 1000));
-      console.log(data.startOfTurn);
+    this.socket.on("updateTime", data => {
       this.setState({
-        seconds: 30 - (Math.floor(Date.now() / 1000) - data.startOfTurn)
+        seconds: data
       });
     });
   }
