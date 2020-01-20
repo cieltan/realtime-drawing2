@@ -52,9 +52,7 @@ module.exports = io => {
     // get new client's token and associate it with socket id
     socket.on("token", data => {
       userMap[socket.id] = data;
-      console.log(socket.id);
       users.push(socket.id);
-      console.log(users);
     });
 
     // event in which the player has drawn
@@ -67,6 +65,24 @@ module.exports = io => {
 
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
+      console.log("1:", users);
+      for (let i = 0; i < users.length; ++i) {
+        if (socket.id === users[i]) {
+          users.splice(i, 1);
+
+          if (i === 0) {
+            if (users.length > 0) {
+              io.emit("changedTurn", -1);
+              io.to(users[0]).emit("turn", 1);
+            }
+
+            moves = [];
+          }
+        }
+      }
+
+      console.log("2:", users);
+
       // sanity check log
       console.log("Client disconnected");
     });
