@@ -14,10 +14,8 @@ import LoginContainer from "./components/auth/LoginContainer";
 import DashboardContainer from "./components/dashboard/DashboardContainer";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import GameView from "./components/drawing/GameView";
-import Timer from './components/drawing/Timer';
+import Timer from "./components/drawing/Timer";
 import NavBar from "./components/layout/NavBar";
-
-import Socks from "./components/socket.js";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -60,7 +58,6 @@ class App extends Component {
                 component={DashboardContainer}
               />
               <PrivateRoute exact path="/game" component={GameView} />
-              <PrivateRoute exact path="/socks" component={Socks} />
             </Switch>
           </div>
         </Router>
