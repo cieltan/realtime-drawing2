@@ -9,6 +9,8 @@ let users = [];
 // keep a list of moves made by the user whose turn it is
 let moves = [];
 
+let startOfTurn = undefined;
+
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -33,10 +35,8 @@ module.exports = io => {
   // execute whenever a new socket connects
   io.on("connection", socket => {
     // sanity check log
+    users.push(socket.id);
     console.log("New client connected");
-
-    // event for new clients to receive drawings already in progress
-    io.emit("initialize", { moves: moves });
 
     io.to(users[0]).emit("turn", 1);
 
@@ -48,7 +48,6 @@ module.exports = io => {
     // get new client's token and associate it with socket id
     socket.on("token", data => {
       userMap[socket.id] = data;
-      users.push(socket.id);
     });
 
     // event in which the player has drawn
@@ -61,13 +60,19 @@ module.exports = io => {
 
     socket.on("startDrawing", () => {
       interval = setInterval(() => emitter(io, socket, users, userMap), 30000);
-      console.log(interval._idleTimeout);
-      io.emit("startDrawing", interval._idleTimeout);
+      startOfTurn = Math.floor(Date.now() / 1000);
+      console.log(startOfTurn);
+      io.emit("startDrawing", {
+        interval: interval._idleTimeout,
+        startOfTurn: startOfTurn
+      });
     });
+
+    // event for new clients to receive drawings already in progress
+    io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
 
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
-      console.log("1:", users);
       for (let i = 0; i < users.length; ++i) {
         if (socket.id === users[i]) {
           users.splice(i, 1);
@@ -83,9 +88,6 @@ module.exports = io => {
           }
         }
       }
-
-      console.log("2:", users);
-
       // sanity check log
       console.log("Client disconnected");
     });

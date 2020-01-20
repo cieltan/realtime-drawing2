@@ -11,7 +11,8 @@ class CanvasContainer extends Component {
         lineWidth: 5,
         response: false,
         turn: false,
-        seconds: 0
+        seconds: 0,
+        startOfTurn: 0
       };
     }
   }
@@ -39,6 +40,14 @@ class CanvasContainer extends Component {
       data.moves.map(point =>
         this.paint(point.start, point.stop, this.userStrokeStyle)
       );
+
+      if (data.startOfTurn !== undefined) {
+        this.setState({
+          seconds: 30 - (Math.floor(Date.now() / 1000) - data.startOfTurn)
+        });
+      }
+
+      console.log(data.startOfTurn);
     });
 
     this.socket.on("turn", data => {
@@ -60,10 +69,10 @@ class CanvasContainer extends Component {
     });
 
     this.socket.on("startDrawing", data => {
-      console.log(typeof data);
-
+      console.log(Math.floor(Date.now() / 1000));
+      console.log(data.startOfTurn);
       this.setState({
-        seconds: data / 1000
+        seconds: 30 - (Math.floor(Date.now() / 1000) - data.startOfTurn)
       });
     });
   }
