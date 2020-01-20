@@ -14,6 +14,7 @@ import LoginContainer from "./components/auth/LoginContainer";
 import DashboardContainer from "./components/dashboard/DashboardContainer";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import GameView from "./components/drawing/GameView";
+import Timer from './components/drawing/Timer';
 import NavBar from "./components/layout/NavBar";
 
 import Socks from "./components/socket.js";
