@@ -9,7 +9,7 @@ const { normalizePort, onListening } = require("./config");
 const port = normalizePort(process.env.PORT || "1234");
 app.set("port", port);
 
-// Create HTTP server;
+// Import HTTP server;
 const server = require("../app").server;
 
 // Event listener for HTTP server "error" event;
@@ -36,6 +36,6 @@ const onError = error => {
 
 // Listen on provided port, on all network interfaces with event listeners and event handlers;
 server.listen(port);
-console.log(`server now listening on port: ${port}`)
-server.on('error', onError);
-server.on('listening', onListening(server));
+console.log(`server now listening on port: ${port}`);
+server.on("error", onError);
+server.on("listening", onListening(server));
