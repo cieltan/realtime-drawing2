@@ -9,8 +9,6 @@ let users = [];
 // keep a list of moves made by the user whose turn it is
 let moves = [];
 
-let turn = 0;
-
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -22,11 +20,11 @@ const arrayRotate = (arr, count) => {
 // logic for when the time interval has completed
 // rotates users array (mutation side effect)
 // emits new drawing
-// emits to to next user it's their turn\
+// emits to to next user it's their turn
 const emitter = (io, socket, users, userMap) => {
   console.log(`it is time: ${Date.now()}`);
-  turn++;
-  io.to(users[0]).emit("changedTurn", -1);
+  io.emit("changedTurn", -1);
+  moves = [];
   arrayRotate(users, 1);
   io.to(users[0]).emit("turn", 1);
 };
@@ -49,7 +47,7 @@ module.exports = io => {
 
     // print message every 60 seconds
     // TODO 60000
-    interval = setInterval(() => emitter(io, socket, users, userMap), 5000);
+    interval = setInterval(() => emitter(io, socket, users, userMap), 10000);
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
