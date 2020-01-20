@@ -38,7 +38,7 @@ class CanvasContainer extends Component {
 
     this.socket.on("initialize", data => {
       data.moves.map(point =>
-        this.paint(point.start, point.stop, this.userStrokeStyle)
+        this.paint(point.start, point.stop, point.userStrokeStyle)
       );
 
       if (data.startOfTurn !== undefined) {
@@ -58,7 +58,7 @@ class CanvasContainer extends Component {
     if (!this.state.turn) {
       this.socket.on("newDrawingData", data => {
         console.log(data);
-        this.paint(data.start, data.stop, this.userStrokeStyle);
+        this.paint(data.start, data.stop, data.userStrokeStyle);
       });
     }
     this.socket.on("changedTurn", data => {
@@ -119,7 +119,10 @@ class CanvasContainer extends Component {
       };
 
       // give socket new drawn data
-      this.socket.emit("newPositionData", positionData);
+      this.socket.emit("newPositionData", {
+        ...positionData,
+        userStrokeStyle: this.state.userStrokeStyle
+      });
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.state.userStrokeStyle);
