@@ -18,6 +18,7 @@ class WordBank extends Component {
             this.setState({ 
                 word: newWord
             });
+            console.log(this.state.word)
         })
     }
 
@@ -48,7 +49,7 @@ class WordBank extends Component {
 		else{
 			return (
 		        <div>
-		        	{this.state.word}
+                    {this.state.word}
 		        </div>
 		    );
 		}

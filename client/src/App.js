@@ -15,6 +15,7 @@ import DashboardContainer from "./components/dashboard/DashboardContainer";
 import PrivateRoute from './components/auth/PrivateRoute';
 import GameView from "./components/drawing/GameView";
 import NavBar from './components/layout/NavBar';
+import Timer from './components/drawing/Timer';
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {

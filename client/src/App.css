@@ -73,6 +73,13 @@
   flex-direction: row;
 }
 
+.buttonalignment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 .word {
   display: grid;
   place-items: center;
@@ -90,4 +97,9 @@
 
 .game{
   background-color: gainsboro;
+  cursor: pointer;
+  display: block;
+  float: center;  
+  z-index: 5;
+  align-items: center;
 }
