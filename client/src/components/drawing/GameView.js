@@ -10,9 +10,9 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import EmailIcon from '@material-ui/icons/Email';
 import SchoolIcon from '@material-ui/icons/School';
 import CanvasContainer from './CanvasContainer.js';
-import WordBank from '../WordBank.js'
-import Timer from './Timer.js'
-import Alerts from "../layout/Alerts.js"
+import WordBank from '../WordBank.js';
+import Timer from './Timer.js';
+import TextInput from './TextInput.js';
 
 class GameView extends Component {
 
@@ -28,8 +28,10 @@ class GameView extends Component {
 
         return (
             <div className="game">
+            <div className="gamealign">
                 <Timer />
-                <WordBank />
+                {/* <WordBank /> */}
+             </div>
             <div className="alignment">
                 <div className="profile-box">
                 <div className="image"><AvatarPic></AvatarPic></div>
@@ -53,8 +55,8 @@ class GameView extends Component {
                     <ListItemText primary="Score" secondary="0" />
                 </ListItem>
                 </div>
-                <div className="paper"><CanvasContainer></CanvasContainer></div>
-                <div><Alerts /></div>
+                <div className="paper"><CanvasContainer /></div>
+                <div className="paper2"><TextInput /></div>
             </div>
            </div>
         )

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Button from '@material-ui/core/Button';
 
 class CanvasContainer extends Component {
     constructor(props){
@@ -104,17 +105,19 @@ class CanvasContainer extends Component {
             <div>
             <div className="buttonalignment">
             <div className="search">
-                <select name="color" class="color-change" onChange={this.changeColor}>
-						<option value="white" select>White</option>
+            <select name="color" onChange={this.changeColor}>
+                        <option value="white" select>White</option>
                         <option value="black" select>Black</option>
 						<option value="blue" select>Blue</option>
 						<option value="purple" select>Purple</option>
 						<option value="green" select>Green</option>
+                        <option value="yellow" select>Yellow</option>
+                        <option value="orange" select>Orange</option>
 						<option value="pink" select>Pink</option>
-					</select>
+			</select>
             </div>
             <div className="search">
-                <select name="thickness" class="line-change" onChange={this.changeThickness}>
+                <select name="thickness"  onChange={this.changeThickness}>
 						<option value={2} select>Thin</option>
 						<option value={5} select>Medium</option>
 						<option value={15} select>Thick</option>
@@ -129,8 +132,8 @@ class CanvasContainer extends Component {
                 onMouseMove={this.onMouseMove}
                 lineWidth={this.state.lineWidth}
                 ref="canvas" 
-                width={600} 
-                height={400}
+                width={775} 
+                height={550}
             />
             </div>
         );
