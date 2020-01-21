@@ -50,15 +50,6 @@ module.exports = io => {
     });
 
     socket.on("startDrawing", () => {
-      interval = setInterval(() => {
-        console.log(`it is time: ${Date.now()}`);
-        io.emit("changedTurn", -1);
-        moves = [];
-        arrayRotate(users, 1);
-        io.to(users[0]).emit("turn", 1);
-        clearInterval(interval);
-      }, 30000);
-
       let timeLeft = 30;
 
       turnTime = setInterval(() => {
@@ -67,8 +58,16 @@ module.exports = io => {
 
         if (timeLeft === -1) {
           clearInterval(turnTime);
+          console.log(`it is time: ${Date.now()}`);
+          clearInterval(interval);
+          io.emit("changedTurn", -1);
+          moves = [];
+          arrayRotate(users, 1);
+          io.to(users[0]).emit("turn", 1);
         }
       }, 1000);
+
+      interval = setInterval(() => {}, 30000);
     });
 
     // event for new clients to receive drawings already in progress
