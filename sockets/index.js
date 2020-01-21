@@ -51,16 +51,18 @@ module.exports = io => {
     socket.on("startDrawing", () => {
       timeLeft = 30;
 
-      turnTime = setInterval(() => {
-        io.emit("updateTime", timeLeft);
-        timeLeft--;
+      if (timeLeft === 30) {
+        turnTime = setInterval(() => {
+          io.emit("updateTime", timeLeft);
+          timeLeft--;
 
-        if (timeLeft === -1) {
-          clearInterval(turnTime);
-          console.log(`it is time: ${Date.now()}`);
-          io.to(users[0]).emit("endTurn", -1);
-        }
-      }, 1000);
+          if (timeLeft === -1) {
+            clearInterval(turnTime);
+            console.log(`it is time: ${Date.now()}`);
+            io.to(users[0]).emit("endTurn", -1);
+          }
+        }, 1000);
+      }
     });
 
     socket.on("changedTurn", () => {
@@ -80,7 +82,7 @@ module.exports = io => {
 
           if (i === 0) {
             if (users.length > 0) {
-              timeLeft = 30;
+              timeLeft = 0;
               io.emit("changedTurn", -1);
               io.to(users[0]).emit("turn", 1);
             }
