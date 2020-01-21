@@ -17,7 +17,8 @@ class CanvasContainer extends Component {
       turn: false,
       seconds: 0,
       startOfTurn: 0,
-      drawing: false
+      drawing: false,
+      currWord: ""
     };
   }
 
@@ -51,7 +52,8 @@ class CanvasContainer extends Component {
       console.log("turn");
       let ctx = this.refs.canvas.getContext("2d");
       ctx.lineWidth = 5;
-      this.setState({ turn: true });
+      this.setState({ turn: true, currWord: data });
+      console.log(data);
     });
 
     if (!this.state.turn) {
@@ -167,7 +169,12 @@ class CanvasContainer extends Component {
 
   determineDisplay = () => {
     if (this.state.turn) {
-      return <div>It's Your Turn</div>;
+      return <div>
+          <h1>It's your turn.</h1>
+          <p>
+            Your word is: {this.state.currWord}
+          </p>
+          </div>;
     } else {
       return <div>Wait for your turn...</div>;
     }

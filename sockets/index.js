@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 // declare interval for server based turn logic
 
 // {socket id : token}
@@ -33,7 +35,12 @@ module.exports = io => {
     users.push(socket.id);
     console.log("New client connected");
 
-    io.to(users[0]).emit("turn", 1);
+    if(users.length === 1) {
+      axios.get("http://localhost:1234/api/users/generateWord")
+      .then(res => {
+        io.to(users[0]).emit("turn", res.data);
+      })
+    }
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
@@ -69,7 +76,13 @@ module.exports = io => {
       io.emit("changedTurn", -1);
       moves = [];
       arrayRotate(users, 1);
-      io.to(users[0]).emit("turn", 1);
+
+      axios.get("http://localhost:1234/api/users/generateWord")
+      .then(res => {
+        io.to(users[0]).emit("turn", res.data);
+      })
+
+      
     });
     // event for new clients to receive drawings already in progress
     io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
