@@ -1,5 +1,4 @@
 // declare interval for server based turn logic
-let interval;
 
 // {socket id : token}
 let userMap = {};
@@ -59,15 +58,12 @@ module.exports = io => {
         if (timeLeft === -1) {
           clearInterval(turnTime);
           console.log(`it is time: ${Date.now()}`);
-          clearInterval(interval);
           io.emit("changedTurn", -1);
           moves = [];
           arrayRotate(users, 1);
           io.to(users[0]).emit("turn", 1);
         }
       }, 1000);
-
-      interval = setInterval(() => {}, 30000);
     });
 
     // event for new clients to receive drawings already in progress
@@ -83,7 +79,6 @@ module.exports = io => {
             if (users.length > 0) {
               io.emit("changedTurn", -1);
               io.to(users[0]).emit("turn", 1);
-              clearInterval(interval);
             }
 
             moves = [];
