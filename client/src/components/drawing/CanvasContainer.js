@@ -160,9 +160,28 @@ class CanvasContainer extends Component {
     }
   };
 
+  determineDisplay = () => {
+    if(this.state.turn){
+      return( 
+        <div> 
+          It's Your Turn 
+        </div>
+      )
+    }
+    else{
+      return(
+        <div> 
+          Wait for your turn... 
+        </div>
+      )
+    }
+  }
+  
   render() {
+    let display = this.determineDisplay();
     return (
       <div>
+        {display}
         {this.state.seconds}
         <Timer seconds={this.state.seconds} />
         <div className="buttonalignment">

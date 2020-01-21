@@ -10,7 +10,7 @@ class GameView extends Component {
       <div className="game">
         <div className="gamealign">
           <Timer />
-          {/* <WordBank /> */}
+          <WordBank />
         </div>
         <div className="alignment">
           <div className="paper">
