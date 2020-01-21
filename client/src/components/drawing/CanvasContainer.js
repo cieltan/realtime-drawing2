@@ -103,7 +103,7 @@ class CanvasContainer extends Component {
   };
 
   onMouseDown = ({ nativeEvent }) => {
-    if (this.state.turn) {
+    if (this.isPainting && this.state.turn && this.state.drawing) {
       const { offsetX, offsetY } = nativeEvent;
       this.isPainting = true;
       this.prevPos = { offsetX, offsetY };
