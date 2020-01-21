@@ -6,33 +6,25 @@ class WordBank extends Component {
         super()
         this.state = {
             word: "",
-            input: "",
             showForm: true
         }
     }
 
-    fetchWords = (word) => {
-    axios.get(`https://api.datamuse.com/words?topics=${word}`)
-        .then(words => {
-            const newWord = words.data[Math.floor(Math.random() * 10)]["word"];
+    fetchWord = (word) => {
+        axios
+        .get("/api/users/generateWord")
+        .then( (res) => {
             this.setState({ 
-                word: newWord
+                word: res.data
             });
-            console.log(this.state.word)
-        })
-    }
-
-    handleChange = (event) => {
-    	this.setState({
-            input: event.target.value
-        })
+        });
     }
 
     handleSubmit = (event) => {
     	this.setState({
             showForm: false
         })
-        this.fetchWords(this.state.input);
+        this.fetchWord();
     }
 
     determineDisplay = () => {
@@ -40,9 +32,7 @@ class WordBank extends Component {
     	if(this.state.showForm) {
 		    return (
 		        <div>
-		        	<h2>Input a Category</h2>
-	        		<input type="text" onChange={this.handleChange}></input>
-	        		<button onClick={this.handleSubmit}>Submit</button>
+	        		<button onClick={this.handleSubmit}>Get a Word</button>
 		        </div>
 		    );
 		}
@@ -56,7 +46,7 @@ class WordBank extends Component {
     }
 
 	render() {
-    	let display = this.determineDisplay();
+    	let display = this.determineDisplay()
 		return (
 			<div> 
 		        {display}
