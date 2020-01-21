@@ -37,6 +37,9 @@ class CanvasContainer extends Component {
   prevPos = { offsetX: 0, offsetY: 0 };
   socket = socketIOClient("http://127.0.0.1:1234");
 
+  guessWord = (word) => {
+    this.socket.emit("guessWord", word)
+  }
   componentDidMount() {
     // Here we set up the properties of the canvas element.
 
@@ -246,7 +249,7 @@ class CanvasContainer extends Component {
             width={950}
             height={600}
           />
-          <TextInput />
+          <TextInput guessWord={this.guessWord}/>
         </div>
       </div>
     );

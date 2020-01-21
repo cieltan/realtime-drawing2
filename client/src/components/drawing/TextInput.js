@@ -14,12 +14,12 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     '& > * + *': {
-      marginTop: theme.spacing(2),
+      marsginTop: theme.spacing(2),
     },
   },
 }));
 
-export default function BasicTextFields() {
+const BasicTextFields = (props) => {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -33,11 +33,7 @@ export default function BasicTextFields() {
   const handleClick = () => {
 
      setWords([...words, currWord]);
-
-     if(currWord === "hi") {
-        setOpen(true);
-        setCorrect(true);
-     }
+     props.guessWord(currWord);
   };
 
   const handleChange = (e) => {
@@ -52,6 +48,8 @@ export default function BasicTextFields() {
 
     setOpen(false);
   };
+
+  console.log(props.guessWord)
 
   return (
       <div className={classes.root}>
@@ -90,3 +88,5 @@ export default function BasicTextFields() {
     </div>
   );
 }
+
+export default BasicTextFields
