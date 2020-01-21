@@ -11,7 +11,7 @@ let moves = [];
 let startOfTurn = undefined;
 
 let turnTime;
-
+let timeLeft;
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -49,7 +49,7 @@ module.exports = io => {
     });
 
     socket.on("startDrawing", () => {
-      let timeLeft = 30;
+      timeLeft = 30;
 
       turnTime = setInterval(() => {
         io.emit("updateTime", timeLeft);
@@ -80,6 +80,7 @@ module.exports = io => {
 
           if (i === 0) {
             if (users.length > 0) {
+              timeLeft = 30;
               io.emit("changedTurn", -1);
               io.to(users[0]).emit("turn", 1);
             }
