@@ -82,6 +82,8 @@ module.exports = io => {
 
           if (i === 0) {
             if (users.length > 0) {
+              arrayRotate(users, -1);
+              timeLeft = 0;
               io.emit("changedTurn", -1);
               io.to(users[0]).emit("turn", 1);
             }
