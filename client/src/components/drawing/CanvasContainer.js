@@ -6,6 +6,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Timer from "./Timer";
+import NativeSelect from "@material-ui/core/NativeSelect";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 class CanvasContainer extends Component {
   constructor(props) {
@@ -13,7 +15,6 @@ class CanvasContainer extends Component {
 
     this.state = {
       userStrokeStyle: "#FFFFFF",
-      lineWidth: 5,
       response: false,
       turn: false,
       seconds: 0,
@@ -38,7 +39,7 @@ class CanvasContainer extends Component {
 
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.lineWidth = this.state.lineWidth;
+    ctx.lineWidth = 5;
 
     this.socket.emit("token", localStorage.getItem("jwtToken"));
 
@@ -50,6 +51,8 @@ class CanvasContainer extends Component {
 
     this.socket.on("turn", data => {
       console.log("turn");
+      let ctx = this.refs.canvas.getContext("2d");
+      ctx.lineWidth = 5;
       this.setState({ turn: true });
     });
 
@@ -180,7 +183,9 @@ class CanvasContainer extends Component {
                 id="demo-simple-select-filled"
                 onChange={this.changeColor}
               >
-                <MenuItem value="white">White</MenuItem>
+                <MenuItem value="white" default>
+                  White
+                </MenuItem>
                 <MenuItem value="black">Black</MenuItem>
                 <MenuItem value="blue">Blue</MenuItem>
                 <MenuItem value="purple">Purple</MenuItem>
@@ -192,19 +197,14 @@ class CanvasContainer extends Component {
             </FormControl>
           </div>
           <div className="search">
-            <FormControl variant="filled" className="buttons">
-              <InputLabel id="demo-simple-select-filled-label">
-                Pen Size
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                id="demo-simple-select-filled"
-                onChange={this.changeThickness}
-              >
-                <MenuItem value={2}>Thin</MenuItem>
-                <MenuItem value={5}>Medium</MenuItem>
-                <MenuItem value={15}>Thick</MenuItem>
-              </Select>
+            <FormControl>
+              <InputLabel>Pen Size</InputLabel>
+              <NativeSelect onChange={this.changeThickness} defaultValue={5}>
+                <option value={2}>Thin</option>
+                <option value={5}>Medium</option>
+                <option value={15}>Thick</option>
+              </NativeSelect>
+              <FormHelperText>Pen Size</FormHelperText>
             </FormControl>
           </div>
         </div>
