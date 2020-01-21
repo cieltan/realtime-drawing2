@@ -17,7 +17,8 @@ class CanvasContainer extends Component {
       response: false,
       turn: false,
       seconds: 0,
-      startOfTurn: 0
+      startOfTurn: 0,
+      drawing: false
     };
   }
 
@@ -61,7 +62,7 @@ class CanvasContainer extends Component {
 
     this.socket.on("endTurn", data => {
       console.log("ended turn");
-      this.setState({ turn: false });
+      this.setState({ turn: false, drawing: false });
       this.socket.emit("changedTurn");
     });
 
@@ -111,7 +112,7 @@ class CanvasContainer extends Component {
   };
 
   onMouseMove = ({ nativeEvent }) => {
-    if (this.isPainting && this.state.turn) {
+    if (this.isPainting && this.state.turn && this.state.drawing) {
       const { offsetX, offsetY } = nativeEvent;
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
@@ -157,6 +158,7 @@ class CanvasContainer extends Component {
   startDrawing = () => {
     if (this.state.turn && this.state.seconds <= 0) {
       this.socket.emit("startDrawing");
+      this.setState({ drawing: true });
     }
   };
 
