@@ -21,17 +21,7 @@ export default class Timer extends Component {
     }
   }
 
-  componentDidMount() {
-    this.myInterval = setInterval(() => {
-      const { seconds } = this.state;
-
-      if (seconds > 0) {
-        this.setState(({ seconds }) => ({
-          seconds: seconds - 1
-        }));
-      }
-    }, 1000);
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {
     clearInterval(this.myInterval);

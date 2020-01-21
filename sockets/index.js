@@ -60,12 +60,13 @@ module.exports = io => {
 
     socket.on("startDrawing", () => {
       interval = setInterval(() => emitter(io, socket, users, userMap), 30000);
-      startOfTurn = Math.floor(Date.now() / 1000);
-      console.log(startOfTurn);
-      io.emit("startDrawing", {
-        interval: interval._idleTimeout,
-        startOfTurn: startOfTurn
-      });
+
+      let timeLeft = 30;
+
+      setInterval(() => {
+        io.emit("updateTime", timeLeft);
+        timeLeft--;
+      }, 1000);
     });
 
     // event for new clients to receive drawings already in progress
