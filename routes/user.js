@@ -7,6 +7,16 @@ const jwt = require("jsonwebtoken");
 
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
+const fs = require('fs') 
+
+
+router.get("/generateWord", (req, res, next) => {
+  fs.readFile("words.txt", (err, data) => {
+    if (err) throw err; 
+    let word = data.toString().split(/\r?\n/)[Math.floor(Math.random() * 121)]
+    return res.status(200).json(word);
+  }) 
+})
 
 //login
 router.post("/register", (req, res, next) => {
