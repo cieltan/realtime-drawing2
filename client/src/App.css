@@ -132,3 +132,8 @@
   float: right;
   margin-left: 4%;
 }
+
+.wordbutton {
+  display: grid;
+  place-items: center;
+}

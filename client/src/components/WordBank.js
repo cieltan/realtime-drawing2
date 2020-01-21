@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import Button from '@material-ui/core/Button';
 
 class WordBank extends Component {
     constructor() {
@@ -32,7 +33,15 @@ class WordBank extends Component {
     	if(this.state.showForm) {
 		    return (
 		        <div>
-	        		<button onClick={this.handleSubmit}>Get a Word</button>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        size="small"
+                        align-items="center"
+                        onClick={this.handleSubmit}
+                    >
+                    Get a Word!
+                    </Button>
 		        </div>
 		    );
 		}

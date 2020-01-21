@@ -9,8 +9,7 @@ class GameView extends Component {
     return (
       <div className="game">
         <div className="gamealign">
-          <Timer />
-          {/* <WordBank /> */}
+          <p className="wordbutton"><WordBank /></p>
         </div>
         <div className="alignment">
           <div className="paper">

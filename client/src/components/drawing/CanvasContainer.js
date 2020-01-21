@@ -163,7 +163,6 @@ class CanvasContainer extends Component {
   render() {
     return (
       <div>
-        {this.state.seconds}
         <Timer seconds={this.state.seconds} />
         <div className="buttonalignment">
           <div className="search">
