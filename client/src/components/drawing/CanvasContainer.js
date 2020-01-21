@@ -2,12 +2,10 @@ import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 import Timer from "./Timer";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import FormHelperText from "@material-ui/core/FormHelperText";
+import Button from "@material-ui/core/Button";
 
 class CanvasContainer extends Component {
   constructor(props) {
@@ -170,30 +168,22 @@ class CanvasContainer extends Component {
   render() {
     return (
       <div>
-        {this.state.seconds}
         <Timer seconds={this.state.seconds} />
         <div className="buttonalignment">
           <div className="search">
-            <FormControl variant="filled" className="buttons">
-              <InputLabel id="demo-simple-select-filled-label">
-                Colors
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                id="demo-simple-select-filled"
-                onChange={this.changeColor}
-              >
-                <MenuItem value="white" default>
-                  White
-                </MenuItem>
-                <MenuItem value="black">Black</MenuItem>
-                <MenuItem value="blue">Blue</MenuItem>
-                <MenuItem value="purple">Purple</MenuItem>
-                <MenuItem value="green">Green</MenuItem>
-                <MenuItem value="yellow">Yellow</MenuItem>
-                <MenuItem value="orange">Orange</MenuItem>
-                <MenuItem value="pink">Pink</MenuItem>
-              </Select>
+            <FormControl>
+              <InputLabel>Colors</InputLabel>
+              <NativeSelect onChange={this.changeColor} defaultValue="gray">
+                <option value="white">White</option>
+                <option value="gray">Gray</option>
+                <option value="black">Black</option>
+                <option value="blue">Blue</option>
+                <option value="purple">Purple</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+                <option value="orange">Orange</option>
+                <option value="pink">Pink</option>
+              </NativeSelect>
             </FormControl>
           </div>
           <div className="search">
@@ -204,11 +194,19 @@ class CanvasContainer extends Component {
                 <option value={5}>Medium</option>
                 <option value={15}>Thick</option>
               </NativeSelect>
-              <FormHelperText>Pen Size</FormHelperText>
             </FormControl>
           </div>
         </div>
-        <button onClick={this.startDrawing}>Start Drawing</button>
+        <div>
+          <Button
+            onClick={this.startDrawing}
+            variant="contained"
+            color="primary"
+          >
+            Start Drawing
+          </Button>
+        </div>
+        <br></br>
         <canvas
           style={{ background: "gray" }}
           onMouseDown={this.onMouseDown}
