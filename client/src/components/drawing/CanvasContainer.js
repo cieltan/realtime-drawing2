@@ -56,7 +56,7 @@ class CanvasContainer extends Component {
     if (!this.state.turn) {
       this.socket.on("newDrawingData", data => {
         console.log(data);
-        this.paint(data.start, data.stop, data.userStrokeStyle);
+        this.paint(data.start, data.stop, data.userStrokeStyle, data.lineWidth);
       });
     }
 
@@ -124,7 +124,8 @@ class CanvasContainer extends Component {
       // give socket new drawn data
       this.socket.emit("newPositionData", {
         ...positionData,
-        userStrokeStyle: this.state.userStrokeStyle
+        userStrokeStyle: this.state.userStrokeStyle,
+        lineWidth: this.refs.canvas.getContext("2d").lineWidth
       });
       // Add the position to the line array
       this.line = this.line.concat(positionData);
@@ -132,8 +133,9 @@ class CanvasContainer extends Component {
     }
   };
 
-  paint = (prevPos, currPos, strokeStyle) => {
+  paint = (prevPos, currPos, strokeStyle, lineWidth) => {
     let ctx = this.refs.canvas.getContext("2d");
+    ctx.lineWidth = lineWidth === undefined ? ctx.lineWidth : lineWidth;
 
     const { offsetX, offsetY } = currPos;
     const { offsetX: x, offsetY: y } = prevPos;
@@ -213,7 +215,6 @@ class CanvasContainer extends Component {
           onMouseLeave={this.endPaintEvent}
           onMouseUp={this.endPaintEvent}
           onMouseMove={this.onMouseMove}
-          lineWidth={this.state.lineWidth}
           ref="canvas"
           width={950}
           height={600}
