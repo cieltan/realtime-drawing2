@@ -8,7 +8,9 @@ class GameView extends Component {
     return (
       <div className="game">
         <div className="gamealign">
-          <WordBank />
+          <p className="wordbutton">
+            <WordBank />
+          </p>
         </div>
         <div className="alignment">
           <div className="paper">
