@@ -5,6 +5,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import Timer from "./Timer";
 
 class CanvasContainer extends Component {
   constructor(props) {
@@ -14,7 +15,9 @@ class CanvasContainer extends Component {
       userStrokeStyle: "#FFFFFF",
       lineWidth: 5,
       response: false,
-      turn: false
+      turn: false,
+      seconds: 0,
+      startOfTurn: 0
     };
   }
 
@@ -40,7 +43,7 @@ class CanvasContainer extends Component {
 
     this.socket.on("initialize", data => {
       data.moves.map(point =>
-        this.paint(point.start, point.stop, this.userStrokeStyle)
+        this.paint(point.start, point.stop, point.userStrokeStyle)
       );
     });
 
@@ -52,14 +55,27 @@ class CanvasContainer extends Component {
     if (!this.state.turn) {
       this.socket.on("newDrawingData", data => {
         console.log(data);
-        this.paint(data.start, data.stop, this.userStrokeStyle);
+        this.paint(data.start, data.stop, data.userStrokeStyle);
       });
     }
+
+    this.socket.on("endTurn", data => {
+      console.log("ended turn");
+      this.setState({ turn: false });
+      this.socket.emit("changedTurn");
+    });
+
     this.socket.on("changedTurn", data => {
       console.log("changed turn");
       this.setState({ turn: false });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+    });
+
+    this.socket.on("updateTime", data => {
+      this.setState({
+        seconds: data
+      });
     });
   }
 
@@ -105,7 +121,10 @@ class CanvasContainer extends Component {
       };
 
       // give socket new drawn data
-      this.socket.emit("newPositionData", positionData);
+      this.socket.emit("newPositionData", {
+        ...positionData,
+        userStrokeStyle: this.state.userStrokeStyle
+      });
       // Add the position to the line array
       this.line = this.line.concat(positionData);
       this.paint(this.prevPos, offSetData, this.state.userStrokeStyle);
@@ -135,9 +154,17 @@ class CanvasContainer extends Component {
     }
   };
 
+  startDrawing = () => {
+    if (this.state.turn && this.state.seconds <= 0) {
+      this.socket.emit("startDrawing");
+    }
+  };
+
   render() {
     return (
       <div>
+        {this.state.seconds}
+        <Timer seconds={this.state.seconds} />
         <div className="buttonalignment">
           <div className="search">
             <FormControl variant="filled" className="buttons">
@@ -177,6 +204,7 @@ class CanvasContainer extends Component {
             </FormControl>
           </div>
         </div>
+        <button onClick={this.startDrawing}>Start Drawing</button>
         <canvas
           style={{ background: "gray" }}
           onMouseDown={this.onMouseDown}

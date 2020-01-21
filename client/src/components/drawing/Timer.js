@@ -1,46 +1,44 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 export default class Timer extends Component {
-    state = {
-        minutes: 1,
-        seconds: 0,
-    }
+  state = {
+    seconds: 0
+  };
 
-    componentDidMount() {
-        this.myInterval = setInterval(() => {
-            const { seconds, minutes } = this.state
+  constructor(props) {
+    super(props);
 
-            if (seconds > 0) {
-                this.setState(({ seconds }) => ({
-                    seconds: seconds - 1
-                }))
-            }
-            if (seconds === 0) {
-                if (minutes === 0) {
-                    clearInterval(this.myInterval)
-                } else {
-                    this.setState(({ minutes }) => ({
-                        minutes: minutes - 1,
-                        seconds: 59
-                    }))
-                }
-            } 
-        }, 1000)
-    }
+    this.state = {
+      seconds: 0
+    };
+  }
 
-    componentWillUnmount() {
-        clearInterval(this.myInterval)
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props) {
+      this.setState({
+        seconds: this.props.seconds
+      });
     }
+  }
 
-    render() {
-        const { minutes, seconds } = this.state
-        return (
-            <div>
-                { minutes === 0 && seconds === 0
-                    ? <h1>Time's Out!</h1>
-                    : <h1>Time Remaining: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}</h1>
-                }
-            </div>
-        )
-    }
+  componentDidMount() {}
+
+  componentWillUnmount() {
+    clearInterval(this.myInterval);
+  }
+
+  render() {
+    const { seconds } = this.state;
+    return (
+      <div>
+        {seconds === 0 ? (
+          <h1>Time's Out!</h1>
+        ) : (
+          <h1>
+            Time Remaining: {seconds < 10 ? `0${seconds}` : seconds} Seconds
+          </h1>
+        )}
+      </div>
+    );
+  }
 }

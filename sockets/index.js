@@ -1,5 +1,4 @@
 // declare interval for server based turn logic
-let interval;
 
 // {socket id : token}
 let userMap = {};
@@ -9,6 +8,10 @@ let users = [];
 // keep a list of moves made by the user whose turn it is
 let moves = [];
 
+let startOfTurn = undefined;
+
+let turnTime;
+let timeLeft;
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -21,38 +24,20 @@ const arrayRotate = (arr, count) => {
 // rotates users array (mutation side effect)
 // emits new drawing
 // emits to to next user it's their turn
-const emitter = (io, socket, users, userMap) => {
-  console.log(`it is time: ${Date.now()}`);
-  io.emit("changedTurn", -1);
-  moves = [];
-  arrayRotate(users, 1);
-  io.to(users[0]).emit("turn", 1);
-};
+const emitter = (io, socket, users, userMap) => {};
 
 module.exports = io => {
   // execute whenever a new socket connects
   io.on("connection", socket => {
     // sanity check log
+    users.push(socket.id);
     console.log("New client connected");
 
-    // event for new clients to receive drawings already in progress
-    io.emit("initialize", { moves: moves });
-
     io.to(users[0]).emit("turn", 1);
-
-    // reset timer
-    if (interval) {
-      clearInterval(interval);
-    }
-
-    // print message every 60 seconds
-    // TODO 60000
-    interval = setInterval(() => emitter(io, socket, users, userMap), 10000);
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
       userMap[socket.id] = data;
-      users.push(socket.id);
     });
 
     // event in which the player has drawn
@@ -63,15 +48,41 @@ module.exports = io => {
       moves.push(data);
     });
 
+    socket.on("startDrawing", () => {
+      timeLeft = 30;
+
+      if (timeLeft === 30) {
+        turnTime = setInterval(() => {
+          io.emit("updateTime", timeLeft);
+          timeLeft--;
+
+          if (timeLeft === -1) {
+            clearInterval(turnTime);
+            console.log(`it is time: ${Date.now()}`);
+            io.to(users[0]).emit("endTurn", -1);
+          }
+        }, 1000);
+      }
+    });
+
+    socket.on("changedTurn", () => {
+      io.emit("changedTurn", -1);
+      moves = [];
+      arrayRotate(users, 1);
+      io.to(users[0]).emit("turn", 1);
+    });
+    // event for new clients to receive drawings already in progress
+    io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
+
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
-      console.log("1:", users);
       for (let i = 0; i < users.length; ++i) {
         if (socket.id === users[i]) {
           users.splice(i, 1);
 
           if (i === 0) {
             if (users.length > 0) {
+              timeLeft = 0;
               io.emit("changedTurn", -1);
               io.to(users[0]).emit("turn", 1);
             }
@@ -80,9 +91,6 @@ module.exports = io => {
           }
         }
       }
-
-      console.log("2:", users);
-
       // sanity check log
       console.log("Client disconnected");
     });
