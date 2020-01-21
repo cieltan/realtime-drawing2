@@ -62,10 +62,19 @@
   justify-content: center;
 }
 
+.turn-title2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2%;
+}
+
+
 .paper {
   display: grid;
   place-items: center;
-  margin-left: 3%;
+  margin-left: 2%;
 }
 
 .alignment {
@@ -97,9 +106,29 @@
 
 .game{
   background-color: gainsboro;
-  cursor: pointer;
-  display: block;
-  float: center;  
-  z-index: 5;
+}
+
+.gamealign{
+  background-color: gainsboro;
+  float: center;
   align-items: center;
+  position: flex;
+  display: inline-flex;
+  flex-direction: column;
+}
+  
+.search {
+  margin: 2%;
+  min-width: 20%;
+  box-align: center;
+  position: flex;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.paper2 {
+  display: grid;
+  place-items: center;
+  float: right;
+  margin-left: 4%;
 }

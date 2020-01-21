@@ -1,23 +1,28 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
+import { makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 class CanvasContainer extends Component {
   constructor(props) {
     super(props);
-    {
-      this.state = {
-        userStrokeStyle: "#FFFFFF",
-        lineWidth: 5,
-        response: false,
-        turn: false
-      };
-    }
+
+    this.state = {
+      userStrokeStyle: "#FFFFFF",
+      lineWidth: 5,
+      response: false,
+      turn: false
+    };
   }
 
   isPainting = false;
 
-  // userStrokeStyle = '#EE92C2';
   line = [];
+
+  prevPos = { offsetX: 0, offsetY: 0 };
 
   prevPos = { offsetX: 0, offsetY: 0 };
   socket = socketIOClient("http://127.0.0.1:1234");
@@ -135,47 +140,41 @@ class CanvasContainer extends Component {
       <div>
         <div className="buttonalignment">
           <div className="search">
-            <select
-              name="color"
-              class="color-change"
-              onChange={this.changeColor}
-            >
-              <option value="white" select>
-                White
-              </option>
-              <option value="black" select>
-                Black
-              </option>
-              <option value="blue" select>
-                Blue
-              </option>
-              <option value="purple" select>
-                Purple
-              </option>
-              <option value="green" select>
-                Green
-              </option>
-              <option value="pink" select>
-                Pink
-              </option>
-            </select>
+            <FormControl variant="filled" className="buttons">
+              <InputLabel id="demo-simple-select-filled-label">
+                Colors
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                onChange={this.changeColor}
+              >
+                <MenuItem value="white">White</MenuItem>
+                <MenuItem value="black">Black</MenuItem>
+                <MenuItem value="blue">Blue</MenuItem>
+                <MenuItem value="purple">Purple</MenuItem>
+                <MenuItem value="green">Green</MenuItem>
+                <MenuItem value="yellow">Yellow</MenuItem>
+                <MenuItem value="orange">Orange</MenuItem>
+                <MenuItem value="pink">Pink</MenuItem>
+              </Select>
+            </FormControl>
           </div>
           <div className="search">
-            <select
-              name="thickness"
-              class="line-change"
-              onChange={this.changeThickness}
-            >
-              <option value={2} select>
-                Thin
-              </option>
-              <option value={5} select>
-                Medium
-              </option>
-              <option value={15} select>
-                Thick
-              </option>
-            </select>
+            <FormControl variant="filled" className="buttons">
+              <InputLabel id="demo-simple-select-filled-label">
+                Pen Size
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                onChange={this.changeThickness}
+              >
+                <MenuItem value={2}>Thin</MenuItem>
+                <MenuItem value={5}>Medium</MenuItem>
+                <MenuItem value={15}>Thick</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </div>
         <canvas
@@ -186,8 +185,8 @@ class CanvasContainer extends Component {
           onMouseMove={this.onMouseMove}
           lineWidth={this.state.lineWidth}
           ref="canvas"
-          width={600}
-          height={400}
+          width={950}
+          height={600}
         />
       </div>
     );
