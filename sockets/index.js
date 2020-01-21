@@ -58,14 +58,17 @@ module.exports = io => {
         if (timeLeft === -1) {
           clearInterval(turnTime);
           console.log(`it is time: ${Date.now()}`);
-          io.emit("changedTurn", -1);
-          moves = [];
-          arrayRotate(users, 1);
-          io.to(users[0]).emit("turn", 1);
+          io.to(users[0]).emit("endTurn", -1);
         }
       }, 1000);
     });
 
+    socket.on("changedTurn", () => {
+      io.emit("changedTurn", -1);
+      moves = [];
+      arrayRotate(users, 1);
+      io.to(users[0]).emit("turn", 1);
+    });
     // event for new clients to receive drawings already in progress
     io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
 

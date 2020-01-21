@@ -53,6 +53,13 @@ class CanvasContainer extends Component {
         this.paint(data.start, data.stop, data.userStrokeStyle);
       });
     }
+
+    this.socket.on("endTurn", data => {
+      console.log("ended turn");
+      this.setState({ turn: false });
+      this.socket.emit("changedTurn");
+    });
+
     this.socket.on("changedTurn", data => {
       console.log("changed turn");
       this.setState({ turn: false });
