@@ -1,5 +1,10 @@
 const axios = require("axios");
+const jwt = require("jsonwebtoken");
 
+const MAX_NUM_OF_TURNS = 1;
+let currNumOfTurns = 0;
+
+const LENGTH_OF_TURN = 60;
 // declare interval for server based turn logic
 
 // {socket id : token}
@@ -10,12 +15,12 @@ let users = [];
 // keep a list of moves made by the user whose turn it is
 let moves = [];
 
-let startOfTurn = undefined;
-
 let turnTime;
 let timeLeft;
 
 let currWord = "";
+
+let correctGuesses = 0;
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -46,7 +51,18 @@ module.exports = io => {
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
-      userMap[socket.id] = data;
+      let token = data.split(" ")[1];
+      let decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+      userMap[socket.id] = {
+        username: decoded.username,
+        score: 0
+      };
+
+      io.emit("initialize", {
+        moves: moves,
+        users: Object.values(userMap)
+      });
     });
 
     // event in which the player has drawn
@@ -58,9 +74,9 @@ module.exports = io => {
     });
 
     socket.on("startDrawing", () => {
-      timeLeft = 60;
+      timeLeft = LENGTH_OF_TURN;
 
-      if (timeLeft === 60) {
+      if (timeLeft === LENGTH_OF_TURN) {
         turnTime = setInterval(() => {
           io.emit("updateTime", timeLeft);
           timeLeft--;
@@ -78,34 +94,68 @@ module.exports = io => {
       io.emit("changedTurn", -1);
       moves = [];
       arrayRotate(users, 1);
+      currNumOfTurns++;
 
-      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
-        currWord = res.data;
-        io.to(users[0]).emit("turn", res.data);
-      });
+      if (currNumOfTurns === MAX_NUM_OF_TURNS) {
+        io.emit("gameOver");
+
+        getConnectedSockets().forEach(function(s) {
+          s.disconnect(true);
+        });
+
+        currNumOfTurns = 0;
+      } else {
+        axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+          currWord = res.data;
+          io.to(users[0]).emit("turn", res.data);
+        });
+      }
     });
     // event for new clients to receive drawings already in progress
-    io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
+
+    io.emit("initialize", {
+      moves: moves,
+      users: Object.values(userMap)
+    });
+
+    getConnectedSockets = () => {
+      return Object.values(io.of("/").connected);
+    };
 
     socket.on("guessWord", word => {
       if (currWord === word) {
-        io.to(socket.id).emit("guessWord", timeLeft * 10);
+        correctGuesses++;
+        userMap[socket.id].score += timeLeft * 10;
+        io.to(socket.id).emit("guessWord", userMap[socket.id].score);
+        io.emit("initialize", {
+          moves: moves,
+          users: Object.values(userMap)
+        });
+
+        if (correctGuesses === users.length - 1) {
+          timeLeft = 0;
+          correctGuesses = 0;
+        }
       }
     });
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
+      delete userMap[socket.id];
+
       for (let i = 0; i < users.length; ++i) {
         if (socket.id === users[i]) {
           users.splice(i, 1);
+          // socket.emit("updateUsers", Object.values(userMap));
 
           if (i === 0) {
             if (users.length > 0) {
               arrayRotate(users, -1);
               timeLeft = 0;
               io.emit("changedTurn", -1);
-              io.to(users[0]).emit("turn", 1);
+              io.to(users[0]).emit("turn", currWord);
             }
 
+            correctGuesses = 0;
             moves = [];
           }
         }

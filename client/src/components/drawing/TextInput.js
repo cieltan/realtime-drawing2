@@ -21,26 +21,15 @@ const useStyles = makeStyles(theme => ({
 
 const BasicTextFields = props => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
 
   const [words, setWords] = React.useState([]);
-  const [score, setScore] = useState(0);
 
   const [currWord, setCurrWord] = React.useState("");
-  const [correct, setCorrect] = React.useState(false);
-
-  useEffect(() => {
-    props.socket.on("guessWord", data => {
-      setCorrect(true);
-      setOpen(true);
-      setScore(data);
-    });
-    // we don't really have a dependency for socket emits
-  }, []);
 
   const handleClick = () => {
     setWords([...words, currWord]);
     props.socket.emit("guessWord", currWord);
+    setCurrWord("");
   };
 
   const handleChange = e => {
@@ -51,8 +40,6 @@ const BasicTextFields = props => {
     if (reason === "clickaway") {
       return;
     }
-
-    setOpen(false);
   };
 
   return (
@@ -73,16 +60,20 @@ const BasicTextFields = props => {
           size="small"
           align-items="center"
           onClick={handleClick}
-          disabled={correct || props.turn}
+          disabled={props.correct || props.turn}
         >
           Enter!
         </Button>
 
         <div>
-          <h1>{score === 0 ? "" : `Score: ${score}`}</h1>
+          <h1>{props.score === 0 ? "" : `Score: ${props.score}`}</h1>
         </div>
 
-        <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+        <Snackbar
+          open={props.open}
+          autoHideDuration={1000}
+          onClose={handleClose}
+        >
           <Alert onClose={handleClose} severity="success">
             Your guess is correct!
           </Alert>

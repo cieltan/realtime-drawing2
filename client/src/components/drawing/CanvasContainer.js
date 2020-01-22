@@ -6,6 +6,7 @@ import Timer from "./Timer";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import Button from "@material-ui/core/Button";
 import TextInput from "./TextInput.js";
+import GameOver from "../layout/GameOver";
 
 const divStyle = {
   display: "flex",
@@ -23,7 +24,12 @@ class CanvasContainer extends Component {
       seconds: 0,
       startOfTurn: 0,
       drawing: false,
-      currWord: ""
+      currWord: "",
+      users: [],
+      correct: false,
+      open: false,
+      score: 0,
+      gameOver: false
     };
   }
 
@@ -51,19 +57,23 @@ class CanvasContainer extends Component {
       data.moves.map(point =>
         this.paint(point.start, point.stop, point.userStrokeStyle)
       );
+
+      this.setState(
+        {
+          users: data.users
+        },
+        () => console.log(this.state.users)
+      );
     });
 
     this.socket.on("turn", data => {
-      console.log("turn");
       let ctx = this.refs.canvas.getContext("2d");
       ctx.lineWidth = 5;
       this.setState({ turn: true, currWord: data });
-      console.log(data);
     });
 
     if (!this.state.turn) {
       this.socket.on("newDrawingData", data => {
-        console.log(data);
         this.paint(data.start, data.stop, data.userStrokeStyle, data.lineWidth);
       });
     }
@@ -76,9 +86,29 @@ class CanvasContainer extends Component {
 
     this.socket.on("changedTurn", data => {
       console.log("changed turn");
-      this.setState({ turn: false });
+      this.setState({ turn: false, correct: false, open: false });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+    });
+
+    this.socket.on("gameOver", () => {
+      this.setState({
+        gameOver: true
+      });
+    });
+
+    this.socket.on("guessWord", data => {
+      this.setState({
+        correct: true,
+        open: true,
+        score: data
+      });
+    });
+
+    this.socket.on("updateUsers", data => {
+      this.setState({
+        users: data
+      });
     });
 
     this.socket.on("updateTime", data => {
@@ -172,6 +202,84 @@ class CanvasContainer extends Component {
     }
   };
 
+  determineGameDisplay = () => {
+    let titleDisplay = this.determineDisplay();
+    let userDisplay = this.determineUserDisplay();
+
+    if (this.state.gameOver) {
+      return <GameOver users={this.state.users}></GameOver>;
+    } else {
+      return (
+        <div>
+          {titleDisplay}
+          {userDisplay}
+          <Timer seconds={this.state.seconds} />
+          <div className="buttonalignment">
+            <div className="search">
+              <FormControl>
+                <InputLabel>Colors</InputLabel>
+                <NativeSelect onChange={this.changeColor} defaultValue="gray">
+                  <option value="white">White</option>
+                  <option value="gray">Gray</option>
+                  <option value="black">Black</option>
+                  <option value="blue">Blue</option>
+                  <option value="purple">Purple</option>
+                  <option value="green">Green</option>
+                  <option value="yellow">Yellow</option>
+                  <option value="orange">Orange</option>
+                  <option value="pink">Pink</option>
+                </NativeSelect>
+              </FormControl>
+            </div>
+            <div className="search">
+              <FormControl>
+                <InputLabel>Pen Size</InputLabel>
+                <NativeSelect onChange={this.changeThickness} defaultValue={5}>
+                  <option value={2}>Thin</option>
+                  <option value={5}>Medium</option>
+                  <option value={15}>Thick</option>
+                </NativeSelect>
+              </FormControl>
+            </div>
+          </div>
+          <div>
+            <Button
+              onClick={this.startDrawing}
+              variant="contained"
+              color="primary"
+              disabled={!this.state.turn}
+            >
+              Start Drawing
+            </Button>
+          </div>
+          <br></br>
+          <div style={divStyle}>
+            <canvas
+              style={{
+                background: "gray",
+                marginRight: "3%"
+              }}
+              onMouseDown={this.onMouseDown}
+              onMouseLeave={this.endPaintEvent}
+              onMouseUp={this.endPaintEvent}
+              onMouseMove={this.onMouseMove}
+              ref="canvas"
+              width={1250}
+              height={600}
+            />
+            <TextInput
+              correct={this.state.correct}
+              open={this.state.open}
+              score={this.state.score}
+              turn={this.state.turn}
+              socket={this.socket}
+            />
+          </div>
+        </div>
+      );
+    }
+  };
+
   determineDisplay = () => {
     if (this.state.turn) {
       return (
@@ -185,69 +293,20 @@ class CanvasContainer extends Component {
     }
   };
 
-  render() {
-    let titleDisplay = this.determineDisplay();
+  determineUserDisplay = () => {
+    return this.state.users.map(elem => {
+      return (
+        <p>
+          {elem.username}: {elem.score}
+        </p>
+      );
+    });
+  };
 
-    return (
-      <div>
-        {titleDisplay}
-        <Timer seconds={this.state.seconds} />
-        <div className="buttonalignment">
-          <div className="search">
-            <FormControl>
-              <InputLabel>Colors</InputLabel>
-              <NativeSelect onChange={this.changeColor} defaultValue="gray">
-                <option value="white">White</option>
-                <option value="gray">Gray</option>
-                <option value="black">Black</option>
-                <option value="blue">Blue</option>
-                <option value="purple">Purple</option>
-                <option value="green">Green</option>
-                <option value="yellow">Yellow</option>
-                <option value="orange">Orange</option>
-                <option value="pink">Pink</option>
-              </NativeSelect>
-            </FormControl>
-          </div>
-          <div className="search">
-            <FormControl>
-              <InputLabel>Pen Size</InputLabel>
-              <NativeSelect onChange={this.changeThickness} defaultValue={5}>
-                <option value={2}>Thin</option>
-                <option value={5}>Medium</option>
-                <option value={15}>Thick</option>
-              </NativeSelect>
-            </FormControl>
-          </div>
-        </div>
-        <div>
-          <Button
-            onClick={this.startDrawing}
-            variant="contained"
-            color="primary"
-          >
-            Start Drawing
-          </Button>
-        </div>
-        <br></br>
-        <div style={divStyle}>
-          <canvas
-            style={{
-              background: "gray",
-              marginRight: "3%"
-            }}
-            onMouseDown={this.onMouseDown}
-            onMouseLeave={this.endPaintEvent}
-            onMouseUp={this.endPaintEvent}
-            onMouseMove={this.onMouseMove}
-            ref="canvas"
-            width={1250}
-            height={600}
-          />
-          <TextInput turn={this.state.turn} socket={this.socket} />
-        </div>
-      </div>
-    );
+  render() {
+    let gameDisplay = this.determineGameDisplay();
+
+    return <div>{gameDisplay}</div>;
   }
 }
 
