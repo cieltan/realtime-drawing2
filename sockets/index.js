@@ -1,6 +1,10 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 
+const MAX_NUM_OF_TURNS = 2;
+let currNumOfTurns = 0;
+
+const LENGTH_OF_TURN = 60;
 // declare interval for server based turn logic
 
 // {socket id : token}
@@ -70,9 +74,9 @@ module.exports = io => {
     });
 
     socket.on("startDrawing", () => {
-      timeLeft = 60;
+      timeLeft = LENGTH_OF_TURN;
 
-      if (timeLeft === 60) {
+      if (timeLeft === LENGTH_OF_TURN) {
         turnTime = setInterval(() => {
           io.emit("updateTime", timeLeft);
           timeLeft--;
@@ -90,11 +94,16 @@ module.exports = io => {
       io.emit("changedTurn", -1);
       moves = [];
       arrayRotate(users, 1);
+      currNumOfTurns++;
 
-      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
-        currWord = res.data;
-        io.to(users[0]).emit("turn", res.data);
-      });
+      if (currNumOfTurns === MAX_NUM_OF_TURNS) {
+        io.emit("gameOver");
+      } else {
+        axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+          currWord = res.data;
+          io.to(users[0]).emit("turn", res.data);
+        });
+      }
     });
     // event for new clients to receive drawings already in progress
 
