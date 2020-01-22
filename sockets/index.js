@@ -14,6 +14,8 @@ let startOfTurn = undefined;
 
 let turnTime;
 let timeLeft;
+
+let currWord = "";
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -35,11 +37,11 @@ module.exports = io => {
     users.push(socket.id);
     console.log("New client connected");
 
-    if(users.length === 1) {
-      axios.get("http://localhost:1234/api/users/generateWord")
-      .then(res => {
+    if (users.length === 1) {
+      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+        currWord = res.data;
         io.to(users[0]).emit("turn", res.data);
-      })
+      });
     }
 
     // get new client's token and associate it with socket id
@@ -56,9 +58,9 @@ module.exports = io => {
     });
 
     socket.on("startDrawing", () => {
-      timeLeft = 30;
+      timeLeft = 60;
 
-      if (timeLeft === 30) {
+      if (timeLeft === 60) {
         turnTime = setInterval(() => {
           io.emit("updateTime", timeLeft);
           timeLeft--;
@@ -77,16 +79,19 @@ module.exports = io => {
       moves = [];
       arrayRotate(users, 1);
 
-      axios.get("http://localhost:1234/api/users/generateWord")
-      .then(res => {
+      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+        currWord = res.data;
         io.to(users[0]).emit("turn", res.data);
-      })
-
-      
+      });
     });
     // event for new clients to receive drawings already in progress
     io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
 
+    socket.on("guessWord", word => {
+      if (currWord === word) {
+        io.to(socket.id).emit("guessWord", timeLeft * 10);
+      }
+    });
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
       for (let i = 0; i < users.length; ++i) {

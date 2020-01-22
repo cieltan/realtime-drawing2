@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -7,46 +7,48 @@ import { makeStyles } from '@material-ui/core/styles';
 import Scroll from "./Scroll.js";
 
 function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
-    '& > * + *': {
-      marginTop: theme.spacing(2),
-    },
-  },
+    width: "100%",
+    "& > * + *": {
+      marsginTop: theme.spacing(2)
+    }
+  }
 }));
 
-export default function BasicTextFields() {
-
+const BasicTextFields = props => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
   const [words, setWords] = React.useState([]);
+  const [score, setScore] = useState(0);
 
   const [currWord, setCurrWord] = React.useState("");
   const [correct, setCorrect] = React.useState(false);
 
+  useEffect(() => {
+    props.socket.on("guessWord", data => {
+      setCorrect(true);
+      setOpen(true);
+      setScore(data);
+    });
+    // we don't really have a dependency for socket emits
+  }, []);
 
   const handleClick = () => {
-
-     setWords([...words, currWord]);
-
-     if(currWord === "hi") {
-        setOpen(true);
-        setCorrect(true);
-     }
+    setWords([...words, currWord]);
+    props.socket.emit("guessWord", currWord);
   };
 
-  const handleChange = (e) => {
-      setCurrWord(e.target.value);
-      console.log(currWord);
-  }
+  const handleChange = e => {
+    setCurrWord(e.target.value);
+  };
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -65,22 +67,29 @@ export default function BasicTextFields() {
             type="text"
             onChange={handleChange}
         />
-       <Button 
-            variant="contained" 
-            color="primary" 
-            size="small"
-            align-items="center"
-            onClick={handleClick}
-            disabled={correct}
-          >
-            Enter!
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          align-items="center"
+          onClick={handleClick}
+          disabled={correct || props.turn}
+        >
+          Enter!
         </Button>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success">
-          This is a success message!
-        </Alert>
-      </Snackbar>
-    </div>
+
+        <div>
+          <h1>{score === 0 ? "" : `Score: ${score}`}</h1>
+        </div>
+
+        <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success">
+            Your guess is correct!
+          </Alert>
+        </Snackbar>
+      </div>
     </div>
   );
-}
+};
+
+export default BasicTextFields;

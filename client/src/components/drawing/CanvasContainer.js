@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
-import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Timer from "./Timer";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import Button from "@material-ui/core/Button";
+import TextInput from "./TextInput.js";
+
+const divStyle = {
+  display: "flex",
+  alignItems: "center"
+};
 
 class CanvasContainer extends Component {
   constructor(props) {
@@ -169,12 +174,12 @@ class CanvasContainer extends Component {
 
   determineDisplay = () => {
     if (this.state.turn) {
-      return <div>
+      return (
+        <div>
           <h1>It's your turn.</h1>
-          <p>
-            Your word is: {this.state.currWord}
-          </p>
-          </div>;
+          <p>Your word is: {this.state.currWord}</p>
+        </div>
+      );
     } else {
       return <div>Wait for your turn...</div>;
     }
@@ -225,16 +230,22 @@ class CanvasContainer extends Component {
           </Button>
         </div>
         <br></br>
-        <canvas
-          style={{ background: "gray" }}
-          onMouseDown={this.onMouseDown}
-          onMouseLeave={this.endPaintEvent}
-          onMouseUp={this.endPaintEvent}
-          onMouseMove={this.onMouseMove}
-          ref="canvas"
-          width={950}
-          height={600}
-        />
+        <div style={divStyle}>
+          <canvas
+            style={{
+              background: "gray",
+              marginRight: "3%"
+            }}
+            onMouseDown={this.onMouseDown}
+            onMouseLeave={this.endPaintEvent}
+            onMouseUp={this.endPaintEvent}
+            onMouseMove={this.onMouseMove}
+            ref="canvas"
+            width={1250}
+            height={600}
+          />
+          <TextInput turn={this.state.turn} socket={this.socket} />
+        </div>
       </div>
     );
   }
