@@ -81,7 +81,7 @@ class CanvasContainer extends Component {
 
     this.socket.on("changedTurn", data => {
       console.log("changed turn");
-      this.setState({ turn: false });
+      this.setState({ turn: false, correct: false });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
     });
@@ -248,6 +248,7 @@ class CanvasContainer extends Component {
             onClick={this.startDrawing}
             variant="contained"
             color="primary"
+            disabled={!this.state.turn}
           >
             Start Drawing
           </Button>

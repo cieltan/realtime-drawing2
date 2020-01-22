@@ -40,6 +40,7 @@ const BasicTextFields = props => {
   const handleClick = () => {
     setWords([...words, currWord]);
     props.socket.emit("guessWord", currWord);
+    setCurrWord("");
   };
 
   const handleChange = e => {
@@ -71,6 +72,7 @@ const BasicTextFields = props => {
           variant="filled"
           type="text"
           onChange={handleChange}
+          value={currWord}
         />
         <Button
           variant="contained"

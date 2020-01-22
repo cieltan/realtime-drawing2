@@ -103,7 +103,12 @@ module.exports = io => {
 
     socket.on("guessWord", word => {
       if (currWord === word) {
-        io.to(socket.id).emit("guessWord", timeLeft * 10);
+        userMap[socket.id].score += timeLeft * 10;
+        io.to(socket.id).emit("guessWord", userMap[socket.id].score);
+        io.emit("initialize", {
+          moves: moves,
+          users: Object.values(userMap)
+        });
       }
     });
     // execute whenever a connected socket disconnects
