@@ -1,4 +1,5 @@
 const axios = require("axios");
+const jwt = require("jsonwebtoken");
 
 // declare interval for server based turn logic
 
@@ -9,8 +10,6 @@ let users = [];
 
 // keep a list of moves made by the user whose turn it is
 let moves = [];
-
-let startOfTurn = undefined;
 
 let turnTime;
 let timeLeft;
@@ -46,7 +45,13 @@ module.exports = io => {
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
-      userMap[socket.id] = data;
+      let token = data.split(" ")[1];
+      let decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+      userMap[socket.id] = {
+        username: decoded.username,
+        score: 0
+      };
     });
 
     // event in which the player has drawn
@@ -85,7 +90,11 @@ module.exports = io => {
       });
     });
     // event for new clients to receive drawings already in progress
-    io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
+
+    io.emit("initialize", {
+      moves: moves,
+      users: Object.values(userMap)
+    });
 
     socket.on("guessWord", word => {
       if (currWord === word) {
@@ -98,12 +107,16 @@ module.exports = io => {
         if (socket.id === users[i]) {
           users.splice(i, 1);
 
+          console.log(userMap);
+          delete userMap[users[i]];
+          console.log(userMap);
+
           if (i === 0) {
             if (users.length > 0) {
               arrayRotate(users, -1);
               timeLeft = 0;
               io.emit("changedTurn", -1);
-              io.to(users[0]).emit("turn", 1);
+              io.to(users[0]).emit("turn", currWord);
             }
 
             moves = [];

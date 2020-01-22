@@ -23,7 +23,8 @@ class CanvasContainer extends Component {
       seconds: 0,
       startOfTurn: 0,
       drawing: false,
-      currWord: ""
+      currWord: "",
+      users: []
     };
   }
 
@@ -51,6 +52,12 @@ class CanvasContainer extends Component {
       data.moves.map(point =>
         this.paint(point.start, point.stop, point.userStrokeStyle)
       );
+
+      console.log(data.users);
+
+      this.setState({
+        users: data.users
+      });
     });
 
     this.socket.on("turn", data => {
@@ -185,12 +192,24 @@ class CanvasContainer extends Component {
     }
   };
 
+  determineUserDisplay = () => {
+    return this.state.users.map(elem => {
+      return (
+        <p>
+          {elem.username}: {elem.score}
+        </p>
+      );
+    });
+  };
+
   render() {
     let titleDisplay = this.determineDisplay();
+    let userDisplay = this.determineUserDisplay();
 
     return (
       <div>
         {titleDisplay}
+        {userDisplay}
         <Timer seconds={this.state.seconds} />
         <div className="buttonalignment">
           <div className="search">
