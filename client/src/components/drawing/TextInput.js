@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
-
+import Scroll from "./Scroll.js";
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -56,14 +56,8 @@ export default function BasicTextFields() {
   return (
       <div className={classes.root}>
           <h1>Words You Have Guessed:</h1>
-                 { words.map( (elem) => {
-                     return (
-                        <div>
-                            <p>{elem}</p>
-                        </div>
-                     );
-                 }) }
     <div className="turn-title2">
+    <Scroll words={words}/>
       <TextField
             id="currWord"
             label="Type Your Guess"

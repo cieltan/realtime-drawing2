@@ -15,7 +15,6 @@ class GameView extends Component {
           </div>
           <div className="paper2">
             <TextInput />
-            <Scroll />
           </div>
         </div>
       </div>
