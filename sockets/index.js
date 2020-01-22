@@ -52,6 +52,11 @@ module.exports = io => {
         username: decoded.username,
         score: 0
       };
+
+      io.emit("initialize", {
+        moves: moves,
+        users: Object.values(userMap)
+      });
     });
 
     // event in which the player has drawn
@@ -103,13 +108,12 @@ module.exports = io => {
     });
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
+      delete userMap[socket.id];
+
       for (let i = 0; i < users.length; ++i) {
         if (socket.id === users[i]) {
           users.splice(i, 1);
-
-          console.log(userMap);
-          delete userMap[users[i]];
-          console.log(userMap);
+          // socket.emit("updateUsers", Object.values(userMap));
 
           if (i === 0) {
             if (users.length > 0) {

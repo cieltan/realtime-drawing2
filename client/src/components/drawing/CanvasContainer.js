@@ -53,24 +53,22 @@ class CanvasContainer extends Component {
         this.paint(point.start, point.stop, point.userStrokeStyle)
       );
 
-      console.log(data.users);
-
-      this.setState({
-        users: data.users
-      });
+      this.setState(
+        {
+          users: data.users
+        },
+        () => console.log(this.state.users)
+      );
     });
 
     this.socket.on("turn", data => {
-      console.log("turn");
       let ctx = this.refs.canvas.getContext("2d");
       ctx.lineWidth = 5;
       this.setState({ turn: true, currWord: data });
-      console.log(data);
     });
 
     if (!this.state.turn) {
       this.socket.on("newDrawingData", data => {
-        console.log(data);
         this.paint(data.start, data.stop, data.userStrokeStyle, data.lineWidth);
       });
     }
@@ -86,6 +84,12 @@ class CanvasContainer extends Component {
       this.setState({ turn: false });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+    });
+
+    this.socket.on("updateUsers", data => {
+      this.setState({
+        users: data
+      });
     });
 
     this.socket.on("updateTime", data => {
