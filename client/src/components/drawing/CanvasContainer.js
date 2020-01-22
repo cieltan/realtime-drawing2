@@ -234,7 +234,6 @@ class CanvasContainer extends Component {
           <canvas
             style={{
               background: "gray",
-              paddingRight: "30%",
               marginRight: "3%"
             }}
             onMouseDown={this.onMouseDown}
@@ -242,10 +241,10 @@ class CanvasContainer extends Component {
             onMouseUp={this.endPaintEvent}
             onMouseMove={this.onMouseMove}
             ref="canvas"
-            width={950}
+            width={1250}
             height={600}
           />
-          <TextInput socket={this.socket} />
+          <TextInput turn={this.state.turn} socket={this.socket} />
         </div>
       </div>
     );
