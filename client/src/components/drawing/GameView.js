@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CanvasContainer from "./CanvasContainer.js";
 import TextInput from "./TextInput.js";
+import Scroll from "./Scroll.js";
 
 class GameView extends Component {
   render() {
@@ -14,6 +15,7 @@ class GameView extends Component {
           </div>
           <div className="paper2">
             <TextInput />
+            <Scroll />
           </div>
         </div>
       </div>
