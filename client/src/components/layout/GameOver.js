@@ -1,5 +1,14 @@
 import React from "react";
 
 export default function GameOver(props) {
-  return <div>{props.userDisplay}</div>;
+  const determineUserDisplay = () => {
+    return props.users.map(elem => {
+      return (
+        <p>
+          {elem.username}: {elem.score}
+        </p>
+      );
+    });
+  };
+  return <div>{determineUserDisplay()}</div>;
 }

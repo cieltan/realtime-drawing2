@@ -205,8 +205,9 @@ class CanvasContainer extends Component {
   determineGameDisplay = () => {
     let titleDisplay = this.determineDisplay();
     let userDisplay = this.determineUserDisplay();
+
     if (this.state.gameOver) {
-      return <GameOver userDisplay={userDisplay}></GameOver>;
+      return <GameOver users={this.state.users}></GameOver>;
     } else {
       return (
         <div>
