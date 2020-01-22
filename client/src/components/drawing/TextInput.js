@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -23,14 +23,16 @@ const BasicTextFields = props => {
   const [open, setOpen] = React.useState(false);
 
   const [words, setWords] = React.useState([]);
+  const [score, setScore] = useState(0);
 
   const [currWord, setCurrWord] = React.useState("");
   const [correct, setCorrect] = React.useState(false);
 
   useEffect(() => {
     props.socket.on("guessWord", data => {
-      setCorrect(data);
-      setOpen(data);
+      setCorrect(true);
+      setOpen(true);
+      setScore(data);
     });
     // we don't really have a dependency for socket emits
   }, []);
@@ -42,7 +44,6 @@ const BasicTextFields = props => {
 
   const handleChange = e => {
     setCurrWord(e.target.value);
-    console.log(currWord);
   };
 
   const handleClose = (event, reason) => {
@@ -77,11 +78,16 @@ const BasicTextFields = props => {
           size="small"
           align-items="center"
           onClick={handleClick}
-          disabled={correct}
+          disabled={correct || props.turn}
         >
           Enter!
         </Button>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+
+        <div>
+          <h1>{score === 0 ? "" : `Score: ${score}`}</h1>
+        </div>
+
+        <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success">
             Your guess is correct!
           </Alert>

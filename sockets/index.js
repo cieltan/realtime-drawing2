@@ -58,9 +58,9 @@ module.exports = io => {
     });
 
     socket.on("startDrawing", () => {
-      timeLeft = 30;
+      timeLeft = 60;
 
-      if (timeLeft === 30) {
+      if (timeLeft === 60) {
         turnTime = setInterval(() => {
           io.emit("updateTime", timeLeft);
           timeLeft--;
@@ -88,7 +88,9 @@ module.exports = io => {
     io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
 
     socket.on("guessWord", word => {
-      io.to(socket.id).emit("guessWord", word === currWord);
+      if (currWord === word) {
+        io.to(socket.id).emit("guessWord", timeLeft * 10);
+      }
     });
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
