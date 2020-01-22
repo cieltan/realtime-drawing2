@@ -15,6 +15,8 @@ let turnTime;
 let timeLeft;
 
 let currWord = "";
+
+let correctGuesses = 0;
 // rotate an array like a deque
 // https://stackoverflow.com/a/33451102
 const arrayRotate = (arr, count) => {
@@ -103,12 +105,18 @@ module.exports = io => {
 
     socket.on("guessWord", word => {
       if (currWord === word) {
+        correctGuesses++;
         userMap[socket.id].score += timeLeft * 10;
         io.to(socket.id).emit("guessWord", userMap[socket.id].score);
         io.emit("initialize", {
           moves: moves,
           users: Object.values(userMap)
         });
+
+        if (correctGuesses === users.length - 1) {
+          timeLeft = 0;
+          correctGuesses = 0;
+        }
       }
     });
     // execute whenever a connected socket disconnects
@@ -128,6 +136,7 @@ module.exports = io => {
               io.to(users[0]).emit("turn", currWord);
             }
 
+            correctGuesses = 0;
             moves = [];
           }
         }
