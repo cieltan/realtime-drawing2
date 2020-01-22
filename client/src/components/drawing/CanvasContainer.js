@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
-import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Timer from "./Timer";
@@ -37,9 +36,6 @@ class CanvasContainer extends Component {
   prevPos = { offsetX: 0, offsetY: 0 };
   socket = socketIOClient("http://127.0.0.1:1234");
 
-  guessWord = (word) => {
-    this.socket.emit("guessWord", word)
-  }
   componentDidMount() {
     // Here we set up the properties of the canvas element.
 
@@ -249,7 +245,7 @@ class CanvasContainer extends Component {
             width={950}
             height={600}
           />
-          <TextInput guessWord={this.guessWord}/>
+          <TextInput socket={this.socket} />
         </div>
       </div>
     );
