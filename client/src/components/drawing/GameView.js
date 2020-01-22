@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CanvasContainer from "./CanvasContainer.js";
 
+
 class GameView extends Component {
   render() {
     return (
