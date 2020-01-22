@@ -37,11 +37,11 @@ module.exports = io => {
     users.push(socket.id);
     console.log("New client connected");
 
-    if(users.length === 1) {
-      axios.get("http://localhost:1234/api/users/generateWord")
-      .then(res => {
+    if (users.length === 1) {
+      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+        currWord = res.data;
         io.to(users[0]).emit("turn", res.data);
-      })
+      });
     }
 
     // get new client's token and associate it with socket id
@@ -79,18 +79,17 @@ module.exports = io => {
       moves = [];
       arrayRotate(users, 1);
 
-      axios.get("http://localhost:1234/api/users/generateWord")
-      .then(res => {
+      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
         currWord = res.data;
         io.to(users[0]).emit("turn", res.data);
-      })  
+      });
     });
     // event for new clients to receive drawings already in progress
     io.emit("initialize", { moves: moves, startOfTurn: startOfTurn });
 
-    socket.on("guessWord", (word) => {
-      io.to(socket.id).emit("guessWord", (word===currWord));
-    })
+    socket.on("guessWord", word => {
+      io.to(socket.id).emit("guessWord", word === currWord);
+    });
     // execute whenever a connected socket disconnects
     socket.on("disconnect", () => {
       for (let i = 0; i < users.length; ++i) {
