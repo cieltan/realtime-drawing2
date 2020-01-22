@@ -1,7 +1,7 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 
-const MAX_NUM_OF_TURNS = 2;
+const MAX_NUM_OF_TURNS = 1;
 let currNumOfTurns = 0;
 
 const LENGTH_OF_TURN = 60;
@@ -98,6 +98,9 @@ module.exports = io => {
 
       if (currNumOfTurns === MAX_NUM_OF_TURNS) {
         io.emit("gameOver");
+        io.disconnnect();
+
+        currNumOfTurns = 0;
       } else {
         axios.get("http://localhost:1234/api/users/generateWord").then(res => {
           currWord = res.data;
