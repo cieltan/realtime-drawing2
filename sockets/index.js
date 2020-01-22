@@ -98,7 +98,10 @@ module.exports = io => {
 
       if (currNumOfTurns === MAX_NUM_OF_TURNS) {
         io.emit("gameOver");
-        io.disconnnect();
+
+        getConnectedSockets().forEach(function(s) {
+          s.disconnect(true);
+        });
 
         currNumOfTurns = 0;
       } else {
@@ -114,6 +117,10 @@ module.exports = io => {
       moves: moves,
       users: Object.values(userMap)
     });
+
+    getConnectedSockets = () => {
+      return Object.values(io.of("/").connected);
+    };
 
     socket.on("guessWord", word => {
       if (currWord === word) {
