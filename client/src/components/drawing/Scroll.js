@@ -1,38 +1,39 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
-    position: 'relative',
-    overflow: 'auto',
-    maxHeight: 300,
+    position: "relative",
+    overflow: "auto",
+    height: 200,
+    maxHeight: 200
   },
   listSection: {
-    backgroundColor: 'inherit',
+    backgroundColor: "inherit"
   },
   ul: {
-    backgroundColor: 'inherit',
-    padding: 0,
-  },
+    backgroundColor: "inherit",
+    padding: 0
+  }
 }));
 
 export default function PinnedSubheaderList(props) {
   const classes = useStyles();
 
   return (
-    <List className={classes.root} >
-            {props.words.map(item => (
-              <ListItem >
-                <ListItemText primary={item} />
-              </ListItem>
-            ))}
+    <List className={classes.root}>
+      {props.words.map(item => (
+        <ListItem>
+          <ListItemText primary={item} />
+        </ListItem>
+      ))}
     </List>
   );
 }

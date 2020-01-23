@@ -29,7 +29,8 @@ class CanvasContainer extends Component {
       correct: false,
       open: false,
       score: 0,
-      gameOver: false
+      gameOver: false,
+      words: []
     };
   }
 
@@ -86,7 +87,7 @@ class CanvasContainer extends Component {
 
     this.socket.on("changedTurn", data => {
       console.log("changed turn");
-      this.setState({ turn: false, correct: false, open: false });
+      this.setState({ turn: false, correct: false, open: false, words: [] });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
     });
@@ -202,6 +203,12 @@ class CanvasContainer extends Component {
     }
   };
 
+  addWord = currWord => {
+    this.setState({
+      words: [...this.state.words, currWord]
+    });
+  };
+
   determineGameDisplay = () => {
     let titleDisplay = this.determineDisplay();
     let userDisplay = this.determineUserDisplay();
@@ -273,6 +280,8 @@ class CanvasContainer extends Component {
               score={this.state.score}
               turn={this.state.turn}
               socket={this.socket}
+              words={this.state.words}
+              addWord={this.addWord}
             />
           </div>
         </div>

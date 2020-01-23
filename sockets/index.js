@@ -1,7 +1,7 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 
-const MAX_NUM_OF_TURNS = 1;
+const MAX_NUM_OF_TURNS = 8;
 let currNumOfTurns = 0;
 
 const LENGTH_OF_TURN = 60;

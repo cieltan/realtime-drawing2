@@ -22,12 +22,11 @@ const useStyles = makeStyles(theme => ({
 const BasicTextFields = props => {
   const classes = useStyles();
 
-  const [words, setWords] = React.useState([]);
-
   const [currWord, setCurrWord] = React.useState("");
 
-  const handleClick = () => {
-    setWords([...words, currWord]);
+  const handleClick = e => {
+    e.preventDefault();
+    props.addWord(currWord);
     props.socket.emit("guessWord", currWord);
     setCurrWord("");
   };
@@ -46,25 +45,27 @@ const BasicTextFields = props => {
     <div className={classes.root}>
       <h1>Words You Have Guessed:</h1>
       <div className="turn-title2">
-        <Scroll words={words} />
-        <TextField
-          id="currWord"
-          label="Type Your Guess"
-          variant="filled"
-          type="text"
-          onChange={handleChange}
-          value={currWord}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          align-items="center"
-          onClick={handleClick}
-          disabled={props.correct || props.turn}
-        >
-          Enter!
-        </Button>
+        <Scroll words={props.words} />
+        <form onSubmit={handleClick}>
+          <TextField
+            id="currWord"
+            label="Type Your Guess"
+            variant="filled"
+            type="text"
+            onChange={handleChange}
+            value={currWord}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            type="submit"
+            align-items="center"
+            disabled={props.correct || props.turn}
+          >
+            Enter!
+          </Button>
+        </form>
 
         <div>
           <h1>{props.score === 0 ? "" : `Score: ${props.score}`}</h1>
