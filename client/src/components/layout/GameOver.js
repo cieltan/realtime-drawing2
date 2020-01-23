@@ -2,24 +2,37 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import EjectIcon from "@material-ui/icons/Eject";
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: "white"
   },
   inline: {
     display: "inline"
   }
 }));
 
+const userCard = (user, avatar) => {
+  return (
+    <ListItem alignItems="flex-start">
+      <ListItemAvatar>
+        <Avatar>{avatar}</Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={user.username}
+        secondary={<React.Fragment>{user.score}</React.Fragment>}
+      />
+    </ListItem>
+  );
+};
 const makeScoreList = (classes, users) => {
   return (
     <List className={classes.root}>
@@ -28,19 +41,9 @@ const makeScoreList = (classes, users) => {
           Dashboard
         </Button>
       </Link>
-      {users.map(user => {
-        return (
-          <ListItem alignItems="flex-start">
-            <ListItemAvatar>
-              <Avatar>{user.username[0]}</Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary={user.username}
-              secondary={<React.Fragment>{user.score}</React.Fragment>}
-            />
-            <Divider variant="inset" component="li" />
-          </ListItem>
-        );
+      {userCard(users[0], <EjectIcon />)}
+      {users.slice(1).map(user => {
+        return userCard(user, user.username[0]);
       })}
     </List>
   );
