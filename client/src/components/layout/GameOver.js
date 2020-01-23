@@ -6,6 +6,8 @@ import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
+import { Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,6 +23,11 @@ const useStyles = makeStyles(theme => ({
 const makeScoreList = (classes, users) => {
   return (
     <List className={classes.root}>
+      <Link to="/dashboard">
+        <Button variant="contained" color="primary">
+          Dashboard
+        </Button>
+      </Link>
       {users.map(user => {
         return (
           <ListItem alignItems="flex-start">
