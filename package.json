@@ -6,7 +6,8 @@
     "start": "nodemon ./bin/www",
     "seed": "node ./utilities/seedDatabase",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm start\" \"npm run client\""
+    "dev": "concurrently \"npm start\" \"npm run client\"",
+    "deploy": "bash ./script/deploy"
   },
   "dependencies": {
     "@material-ui/lab": "^4.0.0-alpha.39",
