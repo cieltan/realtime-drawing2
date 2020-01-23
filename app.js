@@ -55,6 +55,13 @@ const configureApp = () => {
   app.use(compression());
   app.use(cookieParser());
 
+  let locationOfPublicFolder = path.join(
+    __dirname,
+    "client",
+    "build"
+  ); /* NEW ADDITION */
+  app.use(express.static(locationOfPublicFolder)); /* NEW ADDITION */
+
   // Passport middleware
   app.use(passport.initialize());
   require("./bin/passport")(passport);
