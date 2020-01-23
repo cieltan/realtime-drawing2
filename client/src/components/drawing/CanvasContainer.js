@@ -69,9 +69,14 @@ class CanvasContainer extends Component {
     });
 
     this.socket.on("turn", data => {
-      let ctx = this.refs.canvas.getContext("2d");
-      ctx.lineWidth = 5;
       this.setState({ turn: true, currWord: data });
+
+      let canvas = this.refs.canvas;
+
+      if (canvas !== undefined) {
+        let ctx = canvas.getContext("2d");
+        ctx.lineWidth = 5;
+      }
     });
 
     if (!this.state.turn) {
@@ -95,8 +100,13 @@ class CanvasContainer extends Component {
         words: [],
         rounds: data
       });
-      let ctx = this.refs.canvas.getContext("2d");
-      ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+
+      let canvas = this.refs.canvas;
+
+      if (canvas !== undefined) {
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+      }
     });
 
     this.socket.on("gameOver", () => {
