@@ -13,8 +13,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     maxWidth: 360,
-    backgroundColor: "white",
-    margin: "auto"
+    backgroundColor: "white"
   },
   inline: {
     display: "inline"
@@ -34,19 +33,22 @@ const userCard = (user, avatar) => {
     </ListItem>
   );
 };
+
 const makeScoreList = (classes, users) => {
   return (
-    <List className={classes.root}>
-      <Link to="/dashboard">
-        <Button variant="contained" color="primary">
-          Dashboard
-        </Button>
-      </Link>
-      {userCard(users[0], <EjectIcon />)}
-      {users.slice(1).map(user => {
-        return userCard(user, user.username[0]);
-      })}
-    </List>
+    <div clasName="turn-title">
+      <List className={classes.root}>
+        <Link to="/dashboard">
+          <Button variant="contained" color="primary">
+            Dashboard
+          </Button>
+        </Link>
+        {userCard(users[0], <EjectIcon />)}
+        {users.slice(1).map(user => {
+          return userCard(user, user.username[0]);
+        })}
+      </List>
+    </div>
   );
 };
 
@@ -58,9 +60,5 @@ export default function GameOver(props) {
     users.sort((a, b) => b.score - a.score);
     return makeScoreList(classes, users);
   };
-  return (
-    <div>
-      {determineUserDisplay(classes)}
-    </div>
-  );
+  return determineUserDisplay(classes);
 }
