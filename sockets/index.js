@@ -104,6 +104,7 @@ module.exports = io => {
         });
 
         currNumOfTurns = 0;
+        timeLeft = 60;
       } else {
         axios.get("http://localhost:1234/api/users/generateWord").then(res => {
           currWord = res.data;
