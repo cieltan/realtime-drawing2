@@ -1,41 +1,43 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 
-const MAX_NUM_OF_TURNS = 2;
-let currNumOfTurns = 0;
-
-const LENGTH_OF_TURN = 60;
-// declare interval for server based turn logic
-
-// {socket id : token}
-let userMap = {};
-// keep an array of users, first index being whose turn it is
-let users = [];
-
-// keep a list of moves made by the user whose turn it is
-let moves = [];
-
-let turnTime;
-let timeLeft;
-
-let currWord = "";
-
-let correctGuesses = 0;
-// rotate an array like a deque
-// https://stackoverflow.com/a/33451102
-const arrayRotate = (arr, count) => {
-  count -= arr.length * Math.floor(count / arr.length);
-  arr.push.apply(arr, arr.splice(0, count));
-  return arr;
-};
 
 // logic for when the time interval has completed
 // rotates users array (mutation side effect)
 // emits new drawing
 // emits to to next user it's their turn
-const emitter = (io, socket, users, userMap) => {};
 
 module.exports = io => {
+
+  const MAX_NUM_OF_TURNS = 2;
+  let currNumOfTurns = 0;
+
+  const LENGTH_OF_TURN = 60;
+// declare interval for server based turn logic
+
+// {socket id : token}
+  let userMap = {};
+// keep an array of users, first index being whose turn it is
+  let users = [];
+
+// keep a list of moves made by the user whose turn it is
+  let moves = [];
+
+  let turnTime;
+  let timeLeft;
+
+  let currWord = "";
+
+  let correctGuesses = 0;
+// rotate an array like a deque
+// https://stackoverflow.com/a/33451102
+  const arrayRotate = (arr, count) => {
+  count -= arr.length * Math.floor(count / arr.length);
+  arr.push.apply(arr, arr.splice(0, count));
+  return arr;
+};
+
+  const emitter = (io, socket, users, userMap) => {};
   // execute whenever a new socket connects
   io.on("connection", socket => {
     // sanity check log
@@ -43,8 +45,10 @@ module.exports = io => {
     console.log("New client connected");
 
     if (users.length === 1) {
-      axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+      console.log('length 1')
+      axios.get("https://murmuring-journey-74447.herokuapp.com/api/users/generateWord").then(res => {
         currWord = res.data;
+        console.log(users[0])
         io.to(users[0]).emit("turn", res.data);
       });
     }
@@ -58,8 +62,8 @@ module.exports = io => {
         username: decoded.username,
         score: 0
       };
-
       io.emit("initialize", {
+        usersArr: users,
         moves: moves,
         users: Object.values(userMap)
       });
@@ -107,7 +111,7 @@ module.exports = io => {
 
         currNumOfTurns = 0;
       } else {
-        axios.get("http://localhost:1234/api/users/generateWord").then(res => {
+        axios.get("https://murmuring-journey-74447.herokuapp.com/api/users/generateWord").then(res => {
           currWord = res.data;
           io.to(users[0]).emit("turn", res.data);
         });
@@ -116,6 +120,7 @@ module.exports = io => {
     // event for new clients to receive drawings already in progress
 
     io.emit("initialize", {
+      usersArr: users,
       moves: moves,
       users: Object.values(userMap)
     });
@@ -130,6 +135,7 @@ module.exports = io => {
         userMap[socket.id].score += timeLeft * 10;
         io.to(socket.id).emit("guessWord", userMap[socket.id].score);
         io.emit("initialize", {
+          usersArr: users,
           moves: moves,
           users: Object.values(userMap)
         });

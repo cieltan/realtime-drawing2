@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import socketIOClient from "socket.io-client";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Timer from "./Timer";
+import socket from '../../socket';
 import NativeSelect from "@material-ui/core/NativeSelect";
 import Button from "@material-ui/core/Button";
 import TextInput from "./TextInput.js";
@@ -42,8 +42,6 @@ class CanvasContainer extends Component {
   prevPos = { offsetX: 0, offsetY: 0 };
 
   prevPos = { offsetX: 0, offsetY: 0 };
-  port = process.env.PORT || "12334";
-  socket = socketIOClient(`http://54.196.177.179:${this.port}`);
 
   componentDidMount() {
     // Here we set up the properties of the canvas element.
@@ -54,13 +52,13 @@ class CanvasContainer extends Component {
     ctx.lineCap = "round";
     ctx.lineWidth = 5;
 
-    this.socket.emit("token", localStorage.getItem("jwtToken"));
+    socket.emit("token", localStorage.getItem("jwtToken"));
 
-    this.socket.on("initialize", data => {
+    socket.on("initialize", data => {
       data.moves.map(point =>
         this.paint(point.start, point.stop, point.userStrokeStyle)
       );
-
+      console.log(data, 'data')
       this.setState(
         {
           users: data.users
@@ -69,7 +67,7 @@ class CanvasContainer extends Component {
       );
     });
 
-    this.socket.on("turn", data => {
+    socket.on("turn", data => {
       this.setState({ turn: true, currWord: data });
 
       let canvas = this.refs.canvas;
@@ -81,18 +79,18 @@ class CanvasContainer extends Component {
     });
 
     if (!this.state.turn) {
-      this.socket.on("newDrawingData", data => {
+      socket.on("newDrawingData", data => {
         this.paint(data.start, data.stop, data.userStrokeStyle, data.lineWidth);
       });
     }
 
-    this.socket.on("endTurn", data => {
+    socket.on("endTurn", data => {
       console.log("ended turn");
       this.setState({ turn: false, drawing: false });
-      this.socket.emit("changedTurn");
+      socket.emit("changedTurn");
     });
 
-    this.socket.on("changedTurn", data => {
+    socket.on("changedTurn", data => {
       console.log("changed turn");
       this.setState({
         turn: false,
@@ -110,13 +108,13 @@ class CanvasContainer extends Component {
       }
     });
 
-    this.socket.on("gameOver", () => {
+    socket.on("gameOver", () => {
       this.setState({
         gameOver: true
       });
     });
 
-    this.socket.on("guessWord", data => {
+    socket.on("guessWord", data => {
       this.setState({
         correct: true,
         open: true,
@@ -124,13 +122,13 @@ class CanvasContainer extends Component {
       });
     });
 
-    this.socket.on("updateUsers", data => {
+    socket.on("updateUsers", data => {
       this.setState({
         users: data
       });
     });
 
-    this.socket.on("updateTime", data => {
+    socket.on("updateTime", data => {
       this.setState({
         seconds: data.time,
         rounds: data.rounds
@@ -180,7 +178,7 @@ class CanvasContainer extends Component {
       };
 
       // give socket new drawn data
-      this.socket.emit("newPositionData", {
+      socket.emit("newPositionData", {
         ...positionData,
         userStrokeStyle: this.state.userStrokeStyle,
         lineWidth: this.refs.canvas.getContext("2d").lineWidth
@@ -217,7 +215,7 @@ class CanvasContainer extends Component {
 
   startDrawing = () => {
     if (this.state.turn && this.state.seconds <= 0) {
-      this.socket.emit("startDrawing");
+      socket.emit("startDrawing");
       this.setState({ drawing: true });
     }
   };
