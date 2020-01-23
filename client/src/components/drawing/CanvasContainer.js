@@ -30,7 +30,8 @@ class CanvasContainer extends Component {
       open: false,
       score: 0,
       gameOver: false,
-      words: []
+      words: [],
+      rounds: 0
     };
   }
 
@@ -87,7 +88,13 @@ class CanvasContainer extends Component {
 
     this.socket.on("changedTurn", data => {
       console.log("changed turn");
-      this.setState({ turn: false, correct: false, open: false, words: [] });
+      this.setState({
+        turn: false,
+        correct: false,
+        open: false,
+        words: [],
+        rounds: data
+      });
       let ctx = this.refs.canvas.getContext("2d");
       ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
     });
@@ -114,7 +121,8 @@ class CanvasContainer extends Component {
 
     this.socket.on("updateTime", data => {
       this.setState({
-        seconds: data
+        seconds: data.time,
+        rounds: data.rounds
       });
     });
   }
@@ -218,6 +226,7 @@ class CanvasContainer extends Component {
     } else {
       return (
         <div>
+          <h1>Round: {this.state.rounds + 1}</h1>
           {titleDisplay}
           {userDisplay}
           <Timer seconds={this.state.seconds} />
@@ -294,7 +303,7 @@ class CanvasContainer extends Component {
       return (
         <div>
           <h1>It's your turn.</h1>
-          <p>Your word is: {this.state.currWord}</p>
+          <h1>Your word is: {this.state.currWord}</h1>
         </div>
       );
     } else {

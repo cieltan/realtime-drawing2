@@ -78,7 +78,7 @@ module.exports = io => {
 
       if (timeLeft === LENGTH_OF_TURN) {
         turnTime = setInterval(() => {
-          io.emit("updateTime", timeLeft);
+          io.emit("updateTime", { time: timeLeft, rounds: currNumOfTurns });
           timeLeft--;
 
           if (timeLeft === -1) {
@@ -91,7 +91,7 @@ module.exports = io => {
     });
 
     socket.on("changedTurn", () => {
-      io.emit("changedTurn", -1);
+      io.emit("changedTurn", currNumOfTurns);
       moves = [];
       arrayRotate(users, 1);
       currNumOfTurns++;
@@ -153,7 +153,7 @@ module.exports = io => {
             if (users.length > 0) {
               arrayRotate(users, -1);
               timeLeft = 0;
-              io.emit("changedTurn", -1);
+              io.emit("changedTurn", currNumOfTurns);
               io.to(users[0]).emit("turn", currWord);
             }
 
