@@ -42,7 +42,8 @@ class CanvasContainer extends Component {
   prevPos = { offsetX: 0, offsetY: 0 };
 
   prevPos = { offsetX: 0, offsetY: 0 };
-  socket = socketIOClient("http://127.0.0.1:1234");
+  port = process.env.PORT || "1234";
+  socket = socketIOClient(`http://127.0.0.1:${port}`);
 
   componentDidMount() {
     // Here we set up the properties of the canvas element.
