@@ -264,7 +264,7 @@ class CanvasContainer extends Component {
               onMouseUp={this.endPaintEvent}
               onMouseMove={this.onMouseMove}
               ref="canvas"
-              width={1250}
+              width={1150}
               height={600}
             />
             <TextInput
