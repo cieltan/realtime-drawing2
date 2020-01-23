@@ -7,6 +7,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import { Grid } from "@material-ui/core";
 import EjectIcon from "@material-ui/icons/Eject";
 
 const useStyles = makeStyles(theme => ({
@@ -57,5 +58,20 @@ export default function GameOver(props) {
     users.sort((a, b) => b.score - a.score);
     return makeScoreList(classes, users);
   };
-  return <div>{determineUserDisplay(classes)}</div>;
+  return (
+    <div>
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{ minHeight: "100vh" }}
+      >
+        <Grid item xs={3}>
+          {determineUserDisplay(classes)}
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
