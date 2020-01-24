@@ -7,10 +7,10 @@ const { normalizePort, onListening } = require("./config");
 
 // Get port from environment and store in Express;
 const port = process.env.PORT || "5000"
-// app.set("port", port);
+app.set("port", port);
 
 // Import HTTP server;
-const server = require("../app").server;
+const server = http.createServer(app)
 
 // Event listener for HTTP server "error" event;
 const onError = error => {
