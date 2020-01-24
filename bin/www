@@ -6,8 +6,8 @@ const http = require("http");
 const { normalizePort, onListening } = require("./config");
 
 // Get port from environment and store in Express;
-const port = normalizePort(process.env.PORT || "1234");
-app.set("port", port);
+const port = process.env.PORT || "5000"
+// app.set("port", port);
 
 // Import HTTP server;
 const server = require("../app").server;
