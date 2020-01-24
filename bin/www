@@ -36,6 +36,11 @@ const onError = error => {
 
 // Listen on provided port, on all network interfaces with event listeners and event handlers;
 server.listen(port);
+// Instantiate a socket instance based on server obj
+var io = require("socket.io").listen(server);
+// run all socket logic
+var socketLogic = require("../sockets/index")(io);
+
 console.log(`server now listening on port: ${port}`);
 server.on("error", onError);
 server.on("listening", onListening(server));

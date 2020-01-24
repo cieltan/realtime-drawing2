@@ -105,11 +105,6 @@ bootApp();
 
 // Create HTTP server
 var server = require("http").Server(app);
-// Instantiate a socket instance based on server obj
-var io = require("socket.io").listen(server);
-
-// run all socket logic
-var socketLogic = require("./sockets/index")(io);
 
 // Export our app, so that it can be imported in the www file;
 module.exports = { app: app, server: server };
