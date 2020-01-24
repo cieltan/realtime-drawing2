@@ -53,6 +53,7 @@ class CanvasContainer extends Component {
     ctx.lineWidth = 5;
 
     socket.emit("token", localStorage.getItem("jwtToken"));
+    socket.emit("joinRoom");
 
     console.log(socket.id)
 

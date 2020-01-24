@@ -44,14 +44,16 @@ module.exports = io => {
     users.push(socket.id);
     console.log("New client connected");
 
-    if (users.length === 1) {
-      console.log('length 1')
-      axios.get("https://murmuring-journey-74447.herokuapp.com/api/users/generateWord").then(res => {
-        currWord = res.data;
-        console.log(`${users[0]}`)
-        io.to(`${`${users[0]}`}`).emit("turn", res.data);
-      });
-    }
+    socket.on('joinRoom', () => {
+      if (users.length === 1) {
+        console.log('length 1')
+        axios.get("https://murmuring-journey-74447.herokuapp.com/api/users/generateWord").then(res => {
+          currWord = res.data;
+          console.log(`${users[0]}`)
+          io.to(`${`${users[0]}`}`).emit("turn", res.data);
+        });
+      }
+    })
 
     // get new client's token and associate it with socket id
     socket.on("token", data => {
