@@ -48,8 +48,8 @@ module.exports = io => {
       console.log('length 1')
       axios.get("https://murmuring-journey-74447.herokuapp.com/api/users/generateWord").then(res => {
         currWord = res.data;
-        console.log(users[0])
-        io.to(users[0]).emit("turn", res.data);
+        console.log(`${users[0]}`)
+        io.to(`${`${users[0]}`}`).emit("turn", res.data);
       });
     }
 
@@ -88,7 +88,7 @@ module.exports = io => {
           if (timeLeft === -1) {
             clearInterval(turnTime);
             console.log(`it is time: ${Date.now()}`);
-            io.to(users[0]).emit("endTurn", -1);
+            io.to(`${users[0]}`).emit("endTurn", -1);
           }
         }, 1000);
       }
@@ -113,7 +113,7 @@ module.exports = io => {
       } else {
         axios.get("https://murmuring-journey-74447.herokuapp.com/api/users/generateWord").then(res => {
           currWord = res.data;
-          io.to(users[0]).emit("turn", res.data);
+          io.to(`${users[0]}`).emit("turn", res.data);
         });
       }
     });
@@ -160,7 +160,7 @@ module.exports = io => {
               arrayRotate(users, -1);
               timeLeft = 0;
               io.emit("changedTurn", currNumOfTurns);
-              io.to(users[0]).emit("turn", currWord);
+              io.to(`${users[0]}`).emit("turn", currWord);
             }
 
             correctGuesses = 0;
