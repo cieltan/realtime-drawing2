@@ -54,6 +54,8 @@ class CanvasContainer extends Component {
 
     socket.emit("token", localStorage.getItem("jwtToken"));
 
+    console.log(socket.id)
+
     socket.on("initialize", data => {
       data.moves.map(point =>
         this.paint(point.start, point.stop, point.userStrokeStyle)
