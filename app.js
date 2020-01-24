@@ -104,7 +104,7 @@ const bootApp = async () => {
 bootApp();
 
 // Create HTTP server
-var server = app.listen(process.env.PORT);
+var server = require("http").Server(app);
 // Instantiate a socket instance based on server obj
 var io = require("socket.io").listen(server);
 
