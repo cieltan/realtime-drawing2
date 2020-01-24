@@ -104,7 +104,7 @@ const bootApp = async () => {
 bootApp();
 
 // Create HTTP server
-var server = require("http").Server(app);
+var server = require("http").createServer(app);
 
 // Export our app, so that it can be imported in the www file;
 module.exports = { app: app, server: server };
