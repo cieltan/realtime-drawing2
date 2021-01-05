@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@material-ui/lab": "^4.0.0-alpha.39",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.3",
     "concurrently": "^5.0.2",
